@@ -1,11 +1,10 @@
 <?php
-
 /**
  * This class implements automatic class loading for the project. Every time
  * a class is requested but not found, the load() method of this class is
  * called that knows where to look for the file that contains that class.
  */
-class Loader {
+class LazyLoader {
 
     /**
      * An array of paths to search. These will be prefixed with
@@ -15,7 +14,8 @@ class Loader {
      * @var array
      */
     private static $paths = array(
-        'lib/'
+        'lib/',
+        'test/'
     );
 
     /**
@@ -47,6 +47,7 @@ class Loader {
         $project_path = dirname(__FILE__) . '/../';
 
         foreach (self::$paths as $path) {
+            $class = end(explode('\\', $class));
             $path_to_class = $project_path . $path . 'class.' . $class . '.php';
 
             if (file_exists($path_to_class)) {
@@ -57,4 +58,4 @@ class Loader {
     }
 }
 
-Loader::register();
+LazyLoader::register();
