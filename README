@@ -1,0 +1,20 @@
+PHP to RST Documentation Generator
+==================================
+
+Work in progress. The idea is to take a list of classes and translate them into rST. The code is written in a way that
+will make it possible to create any format, though, not just rST.
+
+TODO
+====
+
+The code is in dire need of commenting. I blasted through it this morning ^_^
+
+Some refactoring here and there wouldn't go amiss.
+
+Some documentation on the values you have access to in the .tpl files.
+
+I think that's about it. You'll need some code-fu to adapt this to your own project but it really isn't that tough, I'll
+document the process properly soon :)
+
+Lots of love,
+Sam
