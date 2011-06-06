@@ -79,14 +79,15 @@ class Parser {
             $this->class_list = call_user_func($callback, $this->class_list);
         }
 
+        // Require and remove the special __init__ file. (for adding a loader if needed)
+        if (isset($this->class_list['__init__'])) {
+            require_once $this->class_list['__init__'];
+            unset($this->class_list['__init__']);
+        }
+
         // Include all of the class files.
         foreach($this->class_list as $name => $file) {
             require_once $file;
-        }
-
-        // Remove the special __init__ file. (for adding a loader if needed)
-        if (isset($this->class_list['__init__'])) {
-            unset($this->class_list['__init__']);
         }
     }
 
