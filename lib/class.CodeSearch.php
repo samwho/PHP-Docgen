@@ -7,6 +7,21 @@ class CodeSearch {
     private $class_list = array();
 
     /**
+     * Simply returns the internally stored array of classes.
+     *
+     * If you were to perform multiple findClasses calls and it found a few
+     * different sets of classes, all of them would be stored in this
+     * variable and accessible from this method.
+     *
+     * Stores the classes as class_name => file_location key value pairs.
+     *
+     * @return array Internally stored list of classes.
+     */
+    public function getClassList() {
+        return $this->class_list;
+    }
+
+    /**
      * Give this method a valid glob and it will scan all of the files that match
      * that glob and match class definitions.
      *
