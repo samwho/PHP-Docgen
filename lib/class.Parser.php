@@ -18,6 +18,13 @@ class Parser {
     private $dwoo;
 
     /**
+     * A Dwoo compiler. More info here: http://wiki.dwoo.org/index.php/Dwoo_Compiler
+     *
+     * @var Dwoo_Compiler
+     */
+    private $dwoo_compiler;
+
+    /**
      * @var array An array of callbacks.
      */
     private static $class_filters = array();
@@ -26,6 +33,16 @@ class Parser {
      * @var array An array of callbacks.
      */
     private static $class_list_filters = array();
+
+    /**
+     * @var array An array of compiler hooks.
+     */
+    private static $compiler_hooks = array();
+
+    /**
+     * @var array An array of file name filter callbacks.
+     */
+    private static $file_name_filters = array();
 
     /**
      * Hook a class filter to the Parser. This allows you to edit class information
@@ -59,6 +76,44 @@ class Parser {
     }
 
     /**
+     * Hook a compiler modification into the Parser. Dwoo has a Dwoo_Compiler
+     * class that allows you to set custom pre/post-processors and edit how
+     * the templates are compiled.
+     *
+     * This will pass the Dwoo_Compiler object to your callback and set the
+     * compiler to the result of your callback. This means after any modifications
+     * you do to the compiler, be sure to return the compiler object.
+     *
+     * More info on the Dwoo_Compiler can be found here:
+     * http://wiki.dwoo.org/index.php/Dwoo_Compiler
+     *
+     * @param callback $callback A callback that will be called with the compiler
+     * object at the start of the program.
+     */
+    public static function addCompilerHook($callback) {
+        self::$compiler_hooks[] = $callback;
+    }
+
+    /**
+     * Want to add some extra info to a file name? The callback you pass to
+     * this function will be called for each class that is parsed and it will
+     * be passed the file name (unmodified) and the class data. The return value
+     * of this finction will be assigned to the file name variable and it will
+     * be where the file is stored.
+     *
+     * Make sure that your callback returns a file path. It does not have to
+     * replace all of the placeholders because the file name is passed to
+     * all of the file name filter plugins but at the end of being passed
+     * through all of the plugins, it needs to be a valid file path.
+     *
+     * @param callback $callback A callback that will be called with the
+     * file name and the class info for each class being parsed.
+     */
+    public static function addFileNameFilter($callback) {
+        self::$file_name_filters[] = $callback;
+    }
+
+    /**
      * The constructor takes a single argument: a list of classes to parse.
      *
      * This class list must strictly contain a list of class_name=>file_location
@@ -71,6 +126,13 @@ class Parser {
     public function __construct($class_list) {
         $this->class_list = $class_list;
         $this->dwoo = new Dwoo();
+        $this->dwoo_compiler = new Dwoo_Compiler();
+
+        // Execute the compiler hook callbacks
+        foreach(self::$compiler_hooks as $callback) {
+            $this->dwoo_compiler = call_user_func($callback, $this->dwoo_compiler);
+        }
+
         $this->loadClasses();
     }
 
@@ -104,7 +166,7 @@ class Parser {
      *
      * The $template and $to parameters get passed to parseClass appropriately.
      */
-    public function parseAll($template, $to) {
+    public function parseAllToFile($template, $to) {
         foreach($this->class_list as $class_name => $file) {
             $this->parseClass($class_name, $template, $to);
         }
@@ -140,7 +202,19 @@ class Parser {
         // Create the ClassParser object and parse the :class_name variable in the
         // file path.
         $class = new ClassParser($class_name);
-        $to = str_replace(':class_name', $class_name, $to);
+
+        // Get the array of information to send to the template.
+        $template_info = $class->templateInfo();
+
+        // Apply user defined class info filters.
+        foreach(self::$class_filters as $callback) {
+            $template_info = call_user_func($callback, $template_info);
+        }
+
+        // Apply file name filters.
+        foreach(self::$file_name_filters as $callback) {
+            $to = call_user_func($callback, $to, $template_info);
+        }
 
         // Make sure that the directory exists.
         if (!file_exists(dirname($to))) {
@@ -151,16 +225,9 @@ class Parser {
             }
         }
 
-        // Get the array of information to send to the template.
-        $template_info = $class->templateInfo();
-
-        // Apply user defined class info filters.
-        foreach(self::$class_filters as $callback) {
-            $template_info = call_user_func($callback, $template_info);
-        }
 
         // Parse the template using the Dwoo template framework.
-        $data = $this->dwoo->get($template, $template_info);
+        $data = $this->dwoo->get($template, $template_info, $this->dwoo_compiler);
 
         // Write the parsed template to file.
         file_put_contents($to, $data);

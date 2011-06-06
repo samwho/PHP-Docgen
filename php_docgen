@@ -2,15 +2,41 @@
 <?php
 require_once dirname(__FILE__) . '/lib/class.LazyLoader.php';
 Plugins::loadAll();
+$args = CommandLineUtils::parseArgs($argv);
 
-$tu_dir = '/home/sam/Dropbox/code/PHP/ThinkUp/';
+if (isset($args['h']) || isset($args['help'])) {
+    //TODO Write help function.
+}
+
+if (!isset($args['glob']) || !isset($args['template']) || !isset($args['file'])) {
+    echo 'Incorrect script usage. Please run php_docgen --help for more details.' . "\n";
+    exit;
+}
+
+$glob = $args['glob'];
+$template = $args['template'];
+$output_file = $args['file'];
+
+if (!file_exists($template)) {
+    echo 'The template "' . $template . '" could not be found. Are you sure that' .
+        ' you specified a valid path?' . "\n";
+    exit;
+}
 
 $search = new CodeSearch();
-$classes = $search->findClasses($tu_dir . 'webapp/_lib/**/*.php');
-$classes['__init__'] = $tu_dir . 'webapp/init.php';
+$search->findClasses($glob);
 
-$parser = new Parser($classes);
-$parser->parseAll('templates/class_rst.tpl', $tu_dir . 'docs/source/reference/:class_name.rst');
-$parser->generateTocTree($tu_dir . 'docs/source/reference/index.rst');
+// Add an init script if one is specified.
+if (isset($args['init'])) {
+    $search->addInitScript($args['init']);
+}
+
+$parser = new Parser($search->getClassList());
+$parser->parseAllToFile($template, $output_file);
+
+// Generate a toctree if the --toctree argument is passed.
+if (isset($args['toctree'])) {
+    $parser->generateTocTree(dirname($output_file) . 'index.rst');
+}
 
 ?>

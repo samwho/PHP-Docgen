@@ -15,7 +15,7 @@ class LicenseRemoval {
         //
         // I advise having a play around with the data you will have access to
         // before starting :)
-        Parser::addClassFilter(array(&$this, 'removeGplText'));
+        Parser::addClassFilter(array($this, 'removeGplText'));
     }
 
     /**
@@ -31,7 +31,7 @@ class LicenseRemoval {
      * (or other plugins if there are any).
      */
     public function removeGplText($class_info) {
-        $pattern  = '/LICENSE:(.+)<http:\/\/www\.gnu\.org\/licenses\/>\.\s*/s';
+        $pattern  = '/LICENSE:(.+)\<http:\/\/www\.gnu\.org\/licenses\/\>\.\s*/s';
         $class_info["docblock"] = preg_replace($pattern, '', $class_info["docblock"]);
         return $class_info;
     }
