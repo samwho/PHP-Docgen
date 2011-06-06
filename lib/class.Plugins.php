@@ -15,7 +15,7 @@ class Plugins {
      */
     public static function loadAll() {
         foreach(glob(self::directory() . '*.php') as $file) {
-            if (!in_array($file, get_included_files()) {
+            if (!in_array($file, get_included_files())) {
                 require $file;
                 self::$loaded_plugins[] = $file;
             }
@@ -38,7 +38,7 @@ class Plugins {
     public static function load($name) {
         $file = self::directory() . $name . '.php';
 
-        if (!in_array($file, get_included_files()) {
+        if (!in_array($file, get_included_files())) {
             require $file;
             self::$loaded_plugins[] = $file;
         }
