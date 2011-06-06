@@ -58,6 +58,8 @@ class CodeSearch {
                 echo 'No match.' . "\n\n";
                 return null;
             }
+        } else {
+            return null;
         }
     }
 }
