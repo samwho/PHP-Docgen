@@ -1,4 +1,5 @@
 <?php
+// Require the Dwoo autoloader. This is the only class that will use Dwoo.
 require_once dirname(__FILE__) . '/../extlib/dwoo/dwooAutoload.php';
 
 class Parser {
@@ -9,6 +10,9 @@ class Parser {
     private $class_list;
 
     /**
+     * What's a Dwoo I hear you say? It's a templating engine that I'm
+     * trying out for this project :)
+     *
      * @var Dwoo
      */
     private $dwoo;
