@@ -1,36 +1,49 @@
 #!/usr/bin/env php
 <?php
+// Require the lazy loader. This will auto load classes for you.
 require_once dirname(__FILE__) . '/lib/class.LazyLoader.php';
+
+// Load the plugins. This needs to be done early.
 Plugins::loadAll();
+
+// Parse the command line args into something more usable.
 $args = CommandLineUtils::parseArgs($argv);
 
+// Echo a help text if -h or --help is specified.
 if (isset($args['h']) || isset($args['help'])) {
     //TODO Write help function.
 }
 
+// Require the call to have a glob, a template and a file to output to.
 if (!isset($args['glob']) || !isset($args['template']) || !isset($args['file'])) {
     echo 'Incorrect script usage. Please run php_docgen --help for more details.' . "\n";
     exit;
 }
 
+// Extract command line args into separate variables.
 $glob = $args['glob'];
 $template = $args['template'];
 $output_file = $args['file'];
 
+// Fail if the template specified does not exist.
 if (!file_exists($template)) {
     echo 'The template "' . $template . '" could not be found. Are you sure that' .
         ' you specified a valid path?' . "\n";
     exit;
 }
 
+// Search for classes in the glob specified.
 $search = new CodeSearch();
 $search->findClasses($glob);
 
-// Add an init script if one is specified.
+// Add an init script if one is specified. An init script is something that your
+// code may require to load classes correctly. Such as a script that registers
+// a class loader, maybe.
 if (isset($args['init'])) {
     $search->addInitScript($args['init']);
 }
 
+// Parse the class list and output them to files.
 $parser = new Parser($search->getClassList());
 $parser->parseAllToFile($template, $output_file);
 
