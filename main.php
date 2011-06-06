@@ -1,5 +1,7 @@
 <?php
 require_once dirname(__FILE__) . '/lib/class.LazyLoader.php';
+Plugins::loadAll();
+
 $classes = json_decode(exec('./tu_specific/gen_class_list'), $assoc = true);
 
 $parser = new Parser($classes);

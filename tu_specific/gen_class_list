@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 $tu_path = '/home/sam/Dropbox/code/PHP/ThinkUp/';
-$classes = array('init' => '/home/sam/Dropbox/code/PHP/ThinkUp/webapp/init.php');
+$classes = array('__init__' => '/home/sam/Dropbox/code/PHP/ThinkUp/webapp/init.php');
 $globs = array(
     'webapp/_lib/**/class.*.php',
     'webapp/_lib/**/interface.*.php'

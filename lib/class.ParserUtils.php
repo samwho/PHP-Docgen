@@ -19,6 +19,11 @@ class ParserUtils {
      *
      * Function assumes that the comment has already been stripped with the
      * stripCommentStars function of this class.
+     *
+     * @param string $comment A docblock comment that has already been stripped
+     * of its stars (pass it to stripCommentStars() first if you haven't already).
+     * @return array Returns an array of docblock tag info if there are tags. If the
+     * docblock had no @tags than an empty array is returned.
      */
     public static function getDocTags($comment) {
         preg_match_all(self::$tag_match_regex, $comment, $matches);
@@ -37,10 +42,24 @@ class ParserUtils {
         }
     }
 
+    /**
+     * Takes a docblock comment and returns a version of it that has been stripped of
+     * tags (@param, @return etc.).
+     *
+     * @param string $comment A docblock comment.
+     * @return string A docblock comment stripped of @tags.
+     */
     public static function removeDocTags($comment) {
         return preg_replace(self::$tag_match_regex, '', $comment);
     }
 
+    /**
+     * This method basically just calls stripCommentStars and then removeDocTags on
+     * a comment and then returns the result.
+     *
+     * @param string $comment An unparsed docblock comment.
+     * @return string A docblock comment minus @tags and stars *
+     */
     public static function removeDocStarsAndTags($comment) {
         return trim(self::removeDocTags(self::stripCommentStars($comment)));
     }

@@ -2,18 +2,44 @@
 
 class MethodParser extends ReflectionMethod {
 
+    /**
+     * Overridden from the original behaviour of ReflectionMethod. This now
+     * returns a string that _does not_ contain the starts multiline comment
+     * stars.
+     */
     public function getDocComment() {
         return ParserUtils::stripCommentStars(parent::getDocComment());
     }
 
+    /**
+     * Returns a docblock comment without @tags or stars. So... just the comment bit.
+     *
+     * @return string Docblock comment minus stars and @tags.
+     */
     public function getDocCommentWithoutTags() {
         return ParserUtils::removeDocStarsAndTags(parent::getDocComment());
     }
 
+    /**
+     * Gets an array of tag information from the docblock for this method.
+     *
+     * For example, if the method had "@author Sam Rose <samwho@lbak.co.uk>" in
+     * it, this method would return:
+     *
+     * Array (
+     *     'full_tag' => '@author Sam Rose <samwho@lbak.co.uk>',
+     *     'name' => 'author',
+     *     'contents' => 'Sam Rose <samwho@lbak.co.uk>'
+     * )
+     */
     public function getDocTags() {
         return ParserUtils::getDocTags($this->getDocComment());
     }
 
+    /**
+     * Returns an associative array of information on this method that will be
+     * sent the template for parsing.
+     */
     public function templateInfo() {
         $info = array();
         $info["tags"] = $this->getDocTags();
