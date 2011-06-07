@@ -1,5 +1,5 @@
 <?php
-class Log {
+class Docgen_Log {
     private $messages = array();
     private $color = null;
     private $prefix = '';
@@ -18,7 +18,7 @@ class Log {
      */
     public static function getMainLog() {
         if (is_null(self::$main_app_log)) {
-            self::$main_app_log = new Log('[MAIN]');
+            self::$main_app_log = new Docgen_Log('[MAIN]');
         }
 
         return self::$main_app_log;
@@ -34,7 +34,7 @@ class Log {
      */
     public static function getPluginLog() {
         if (is_null(self::$plugin_log)) {
-            self::$plugin_log = new Log('[PLUGIN]');
+            self::$plugin_log = new Docgen_Log('[PLUGIN]');
         }
 
         return self::$plugin_log;
@@ -45,7 +45,7 @@ class Log {
      * will be prepended to every log message.
      */
     public function __construct($prefix) {
-        $this->color = Color::getInstance();
+        $this->color = Docgen_Color::getInstance();
         $this->prefix = $prefix;
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-class CodeSearch {
+class Docgen_CodeSearch {
 
     private static $class_regex = '/^\s*(?:abstract\s+)?(?:class|interface)\s+(\w+?)\s+(?:.*?)\s*{/m';
 

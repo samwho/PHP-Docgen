@@ -1,6 +1,6 @@
 <?php
 
-class Plugins {
+class Docgen_Plugins {
     private static $loaded_plugins = array();
 
     /**

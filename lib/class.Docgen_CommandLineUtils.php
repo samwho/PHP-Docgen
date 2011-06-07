@@ -1,6 +1,6 @@
 <?php
 
-class CommandLineUtils {
+class Docgen_CommandLineUtils {
     /**
      * A function that takes an array of command line arguments
      * and parses them into something meaningful.

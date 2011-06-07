@@ -1,6 +1,6 @@
 <?php
 
-class Application {
+class Docgen_Application {
     protected $args;
     protected $log;
 
@@ -32,7 +32,7 @@ class Application {
         }
 
         // Search for classes in the glob specified.
-        $search = new CodeSearch();
+        $search = new Docgen_CodeSearch();
         $search->findClasses($glob);
 
         // Add an init script if one is specified. An init script is something that your
@@ -43,7 +43,7 @@ class Application {
         }
 
         // Parse the class list and output them to files.
-        $parser = new Parser($search->getClassList());
+        $parser = new Docgen_Parser($search->getClassList());
         $parser->parseAllToFile($template, $output_file);
 
         // Generate a toctree if the --toctree argument is passed.
@@ -54,7 +54,7 @@ class Application {
 
     private function initialize() {
         // Set the color settings.
-        $color = Color::getInstance();
+        $color = Docgen_Color::getInstance();
         if (isset($this->args['color']) || isset($this->args['c'])) {
             $color->setEnabled(true);
         } else {
@@ -68,10 +68,10 @@ class Application {
         }
 
         // Load the plugins. This needs to be done early.
-        Plugins::loadAll();
+        Docgen_Plugins::loadAll();
 
         // Get the main application log object.
-        $this->log = Log::getMainLog();
+        $this->log = Docgen_Log::getMainLog();
     }
 
     private function help() {

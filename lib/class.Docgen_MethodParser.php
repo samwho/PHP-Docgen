@@ -1,6 +1,6 @@
 <?php
 
-class MethodParser extends ReflectionMethod {
+class Docgen_MethodParser extends ReflectionMethod {
     private static $hook_name = 'method_info';
 
     /**
@@ -16,7 +16,7 @@ class MethodParser extends ReflectionMethod {
      * the call_user_func method.
      */
     public static function addHook($callback) {
-        Hooks:add(self::$hook_name, $callback);
+        Docgen_Hooks:add(self::$hook_name, $callback);
     }
 
     /**
@@ -25,7 +25,7 @@ class MethodParser extends ReflectionMethod {
      * stars.
      */
     public function getDocComment() {
-        return ParserUtils::stripCommentStars(parent::getDocComment());
+        return Docgen_ParserUtils::stripCommentStars(parent::getDocComment());
     }
 
     /**
@@ -34,7 +34,7 @@ class MethodParser extends ReflectionMethod {
      * @return string Docblock comment minus stars and @tags.
      */
     public function getDocCommentWithoutTags() {
-        return ParserUtils::removeDocStarsAndTags(parent::getDocComment());
+        return Docgen_ParserUtils::removeDocStarsAndTags(parent::getDocComment());
     }
 
     /**
@@ -50,7 +50,7 @@ class MethodParser extends ReflectionMethod {
      * )
      */
     public function getDocTags() {
-        return ParserUtils::getDocTags($this->getDocComment());
+        return Docgen_ParserUtils::getDocTags($this->getDocComment());
     }
 
     /**
@@ -89,6 +89,6 @@ class MethodParser extends ReflectionMethod {
         }
 
         // Pass the method info through the registered hooks and return it.
-        return Hooks::call(self::$hook_name, array($info));
+        return Docgen_Hooks::call(self::$hook_name, array($info));
     }
 }

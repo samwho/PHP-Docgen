@@ -1,5 +1,5 @@
 <?php
-class ClassParser extends ReflectionClass {
+class Docgen_ClassParser extends ReflectionClass {
     private static $hook_name = 'class_info';
 
     /**
@@ -15,7 +15,7 @@ class ClassParser extends ReflectionClass {
      * the call_user_func method.
      */
     public static function addHook($callback) {
-        Hooks::add(self::$hook_name, $callback);
+        Docgen_Hooks::add(self::$hook_name, $callback);
     }
 
     /**
@@ -24,7 +24,7 @@ class ClassParser extends ReflectionClass {
      * stars.
      */
     public function getDocComment() {
-        return ParserUtils::stripCommentStars(parent::getDocComment());
+        return Docgen_ParserUtils::stripCommentStars(parent::getDocComment());
     }
 
     /**
@@ -40,7 +40,7 @@ class ClassParser extends ReflectionClass {
      * )
      */
     public function getDocTags() {
-        return ParserUtils::getDocTags($this->getDocComment());
+        return Docgen_ParserUtils::getDocTags($this->getDocComment());
     }
 
     /**
@@ -49,7 +49,7 @@ class ClassParser extends ReflectionClass {
      * @return string Docblock comment minus stars and @tags.
      */
     public function getDocCommentWithoutTags() {
-        return ParserUtils::removeDocStarsAndTags(parent::getDocComment());
+        return Docgen_ParserUtils::removeDocStarsAndTags(parent::getDocComment());
     }
 
     /**
@@ -64,7 +64,7 @@ class ClassParser extends ReflectionClass {
     public function getMethods() {
         $methods = parent::getMethods();
         foreach ($methods as $key=>$method) {
-            $methods[$key] = new MethodParser($method->class, $method->name);
+            $methods[$key] = new Docgen_MethodParser($method->class, $method->name);
         }
 
         return $methods;
@@ -119,7 +119,7 @@ class ClassParser extends ReflectionClass {
         // there a big inheritance tree. Lots of rich information for the templates,
         // though.
         if ($this->getParentClass()) {
-            $parent = new ClassParser($this->getParentClass()->name);
+            $parent = new Docgen_ClassParser($this->getParentClass()->name);
         } else {
             $parent = false;
         }
@@ -132,7 +132,7 @@ class ClassParser extends ReflectionClass {
         // information!
         $info["interfaces"] = array();
         foreach($this->getInterfaceNames() as $interface) {
-            $interface_class = new ClassParser($interface);
+            $interface_class = new Docgen_ClassParser($interface);
             $info["interfaces"][] = $interface_class->templateInfo();
         }
 
@@ -144,11 +144,11 @@ class ClassParser extends ReflectionClass {
         // Add property information.
         $info["properties"] = array();
         foreach($this->getProperties() as $property) {
-            $property_class = new PropertyParser($property->class, $property->name);
+            $property_class = new Docgen_PropertyParser($property->class, $property->name);
             $info["properties"][] = $property_class->templateInfo();
         }
 
         // Call the class info hooks and return the result.
-        return Hooks::call(self::$hook_name, array($info));
+        return Docgen_Hooks::call(self::$hook_name, array($info));
     }
 }

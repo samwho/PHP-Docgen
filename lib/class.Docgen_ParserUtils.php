@@ -1,5 +1,5 @@
 <?php
-class ParserUtils {
+class Docgen_ParserUtils {
 
     private static $tag_match_regex = '/^\s*@([a-z]+)\s+(.*?)(?=\z|^\s*@[a-z]+\s)/sm';
 

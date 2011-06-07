@@ -1,11 +1,11 @@
 <?php
-class FileNameParser {
+class Docgen_FileNameParser {
     /**
      * Add a file name filter to the Parser class. This callback runs the
      * parse method on the current object.
      */
     public function __construct() {
-        Parser::addFileNameHook(array($this, 'parse'));
+        Docgen_Parser::addFileNameHook(array($this, 'parse'));
     }
 
     /**
@@ -43,4 +43,4 @@ class FileNameParser {
 
 // Create an instance of the class. This is the plugin writer's responsibility,
 // the code will not instantiate plugin classes for you.
-new FileNameParser();
+new Docgen_FileNameParser();

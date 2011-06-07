@@ -1,13 +1,13 @@
 #!/usr/bin/env php
 <?php
 // Require the lazy loader. This will auto load classes for you.
-require_once dirname(__FILE__) . '/lib/class.LazyLoader.php';
+require_once dirname(__FILE__) . '/lib/class.Docgen_LazyLoader.php';
 
 // Parse the command line args into something more usable.
-$args = CommandLineUtils::parseArgs($argv);
+$args = Docgen_CommandLineUtils::parseArgs($argv);
 
 // Create the application.
-$app = new Application($args);
+$app = new Docgen_Application($args);
 
 $app->go();
 ?>

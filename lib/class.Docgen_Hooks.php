@@ -1,6 +1,6 @@
 <?php
 
-class Hooks {
+class Docgen_Hooks {
     private static $hooks = array();
 
     /**
@@ -15,7 +15,7 @@ class Hooks {
      */
     public static function add($name, $callback) {
         // If the hook does not exist, create it.
-        if (!Hooks::exists($name)) {
+        if (!Docgen_Hooks::exists($name)) {
             self::$hooks[$name] = array();
         }
 
@@ -45,11 +45,9 @@ class Hooks {
      * read above).
      */
     public static function call($name, array $args = null) {
-        $log = Log::getMainLog();
-
         // Get the callbacks. If none exist for the hook name, just return
         // an empty array so that the foreach's don't complain.
-        $callbacks = Hooks::exists($name) ? self::$hooks[$name] : array();
+        $callbacks = Docgen_Hooks::exists($name) ? self::$hooks[$name] : array();
 
         // If there are no arguments, just execute the callbacks and return.
         if (empty($args)) {

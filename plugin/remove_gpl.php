@@ -5,7 +5,7 @@
  * license string in your class level docblock and don't want it to appear in
  * the documentation.
  */
-class LicenseRemoval {
+class ThinkUp_LicenseRemoval {
     /**
      * The constructor will add all of the callbacks to the necessary places.
      */
@@ -15,7 +15,7 @@ class LicenseRemoval {
         //
         // I advise having a play around with the data you will have access to
         // before starting :)
-        ClassParser::addHook(array($this, 'removeGplText'));
+        Docgen_ClassParser::addHook(array($this, 'removeGplText'));
     }
 
     /**
@@ -39,4 +39,4 @@ class LicenseRemoval {
 
 // Create an instance of the class. This is the plugin writer's responsibility,
 // the code will not instantiate plugin classes for you.
-new LicenseRemoval();
+new ThinkUp_LicenseRemoval();

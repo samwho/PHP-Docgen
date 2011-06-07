@@ -4,7 +4,7 @@
  * a class is requested but not found, the load() method of this class is
  * called that knows where to look for the file that contains that class.
  */
-class LazyLoader {
+class Docgen_LazyLoader {
 
     /**
      * An array of paths to search. These will be prefixed with
@@ -58,4 +58,4 @@ class LazyLoader {
     }
 }
 
-LazyLoader::register();
+Docgen_LazyLoader::register();

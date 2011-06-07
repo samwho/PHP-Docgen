@@ -3,7 +3,7 @@
  * Credit for this class goes to:
  * http://www.if-not-true-then-false.com/2010/php-class-for-coloring-php-command-line-cli-scripts-output-php-output-colorizing-using-bash-shell-colors/
  */
-class Color {
+class Docgen_Color {
     private $foreground_colors = array();
     private $background_colors = array();
 
@@ -13,7 +13,7 @@ class Color {
 
     public static function getInstance() {
         if (is_null(self::$instance)) {
-            self::$instance = new Color();
+            self::$instance = new Docgen_Color();
         }
 
         return self::$instance;

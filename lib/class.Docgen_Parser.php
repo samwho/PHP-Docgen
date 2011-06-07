@@ -2,7 +2,7 @@
 // Require the Dwoo autoloader. This is the only class that will use Dwoo.
 require_once dirname(__FILE__) . '/../extlib/dwoo/dwooAutoload.php';
 
-class Parser {
+class Docgen_Parser {
 
     /**
      * @var array
@@ -40,7 +40,7 @@ class Parser {
      * object at the start of the program.
      */
     public static function addCompilerHook($callback) {
-        Hooks::add('compiler_created', $callback);
+        Docgen_Hooks::add('compiler_created', $callback);
     }
 
     /**
@@ -59,7 +59,7 @@ class Parser {
      * file name and the class info for each class being parsed.
      */
     public static function addFileNameHook($callback) {
-        Hooks::add('file_name', $callback);
+        Docgen_Hooks::add('file_name', $callback);
     }
 
     /**
@@ -77,7 +77,7 @@ class Parser {
         $this->dwoo = new Dwoo();
 
         // Create a Dwoo_Compiler and call the hooks on it.
-        $this->dwoo_compiler = Hooks::call('compiler_created',
+        $this->dwoo_compiler = Docgen_Hooks::call('compiler_created',
             array(new Dwoo_Compiler()));
 
         $this->loadClasses();
@@ -99,7 +99,7 @@ class Parser {
         }
 
         // Call the classes_loaded hook.
-        Hooks::call('classes_loaded');
+        Docgen_Hooks::call('classes_loaded');
     }
 
     /**
@@ -148,7 +148,7 @@ class Parser {
         $template_info = $this->getClassInfo($class_name);
 
         // Apply file name filters.
-        $to = Hooks::call('file_name', array($to, $template_info));
+        $to = Docgen_Hooks::call('file_name', array($to, $template_info));
 
         // Make sure that the directory exists.
         if (!file_exists(dirname($to))) {
@@ -183,7 +183,7 @@ class Parser {
     public function getClassInfo($class_name) {
         // Create the ClassParser object and parse the :class_name variable in the
         // file path.
-        $class = new ClassParser($class_name);
+        $class = new Docgen_ClassParser($class_name);
 
         // Get the array of information to send to the template.
         return $class->templateInfo();

@@ -1,6 +1,6 @@
 <?php
 
-class PropertyParser extends ReflectionProperty {
+class Docgen_PropertyParser extends ReflectionProperty {
     private static $hook_name = 'property_info';
 
     /**
@@ -16,7 +16,7 @@ class PropertyParser extends ReflectionProperty {
      * the call_user_func method.
      */
     public static function addHook($callback) {
-        Hoooks:add(self::$hook_name, $callback);
+        Docgen_Hoooks:add(self::$hook_name, $callback);
     }
 
 
@@ -26,7 +26,7 @@ class PropertyParser extends ReflectionProperty {
      * stars.
      */
     public function getDocComment() {
-        return ParserUtils::stripCommentStars(parent::getDocComment());
+        return Docgen_ParserUtils::stripCommentStars(parent::getDocComment());
     }
 
     /**
@@ -35,7 +35,7 @@ class PropertyParser extends ReflectionProperty {
      * @return string Docblock comment minus stars and @tags.
      */
     public function getDocCommentWithoutTags() {
-        return ParserUtils::removeDocStarsAndTags(parent::getDocComment());
+        return Docgen_ParserUtils::removeDocStarsAndTags(parent::getDocComment());
     }
 
     /**
@@ -51,7 +51,7 @@ class PropertyParser extends ReflectionProperty {
      * )
      */
     public function getDocTags() {
-        return ParserUtils::getDocTags($this->getDocComment());
+        return Docgen_ParserUtils::getDocTags($this->getDocComment());
     }
 
     /**
@@ -69,6 +69,6 @@ class PropertyParser extends ReflectionProperty {
         $info["tags"] = $this->getDocTags();
 
         // Pass the property info through registered property info hooks and return it.
-        return Hooks::call(self::$hook_name, array($info));
+        return Docgen_Hooks::call(self::$hook_name, array($info));
     }
 }
