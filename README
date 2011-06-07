@@ -1,20 +1,22 @@
-PHP to RST Documentation Generator
-==================================
+PHP Docgen
+==========
 
-Work in progress. The idea is to take a list of classes and translate them into rST. The code is written in a way that
-will make it possible to create any format, though, not just rST.
+Work in progress.
 
 TODO
 ====
 
-The code is in dire need of commenting. I blasted through it this morning ^_^
+I accidentally created two test directories. Pick one, Sam.
 
-Some refactoring here and there wouldn't go amiss.
+Need to write tests.
 
-Some documentation on the values you have access to in the .tpl files.
+Need to look closer at the Docgen_Application and make it into an abstract class for users to implement.
 
-I think that's about it. You'll need some code-fu to adapt this to your own project but it really isn't that tough, I'll
-document the process properly soon :)
+Currently, the Docgen_CodeSearch class only finds one class per file. This isn't necessarily the case in some codebases.
+
+The Docgen_CodeSearch class could probably use some extra helpful methods, too. For finding functions, maybe.
+
+Need to write tutorials and stuff so people actually know what to do.
 
 Lots of love,
 Sam
