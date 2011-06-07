@@ -74,7 +74,6 @@ class Docgen_CodeSearch {
      */
     public function scanForClasses($file) {
         if (file_exists($file)) {
-            Echo "Scanning $file... ";
             // Get file contents.
             $contents = file_get_contents($file);
 
@@ -85,11 +84,8 @@ class Docgen_CodeSearch {
             // If anything matched the full regex, create a list of classes in
             // the file and return it.
             if (!empty($matches[0])) {
-                echo "Matched " . sizeof($matches[0]) . ".\n\n";
-
                 return array($file => $matches[1]);
             } else {
-                echo 'No match.' . "\n\n";
                 return null;
             }
         } else {

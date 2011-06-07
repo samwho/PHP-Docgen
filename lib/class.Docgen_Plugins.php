@@ -15,10 +15,14 @@ class Docgen_Plugins {
      *
      * When it is finished, the 'plugins_loaded' hook is called with no
      * arguments.
+     *
+     * @param bool $testing Only set this during testing. It makes the
+     * class load plugins from tests/test_plugins/ instead of the normal
+     * plugin/ directory.
      */
-    public static function loadAll() {
+    public static function loadAll($testing = false) {
         foreach(glob(self::directory() . '*.php') as $file) {
-            self::load(basename($file));
+            self::load(basename($file), $testing);
         }
 
         // Fire a hook that signifies all plugins have been loaded.
@@ -37,12 +41,16 @@ class Docgen_Plugins {
      *
      * @param string $name Plugin file name without path.
      */
-    public static function load($name) {
-        $file = self::directory() . $name;
+    public static function load($name, $testing = false) {
+        if ($testing) {
+            $file = self::directory() . '../tests/test_plugins/' . $name;
+        } else {
+            $file = self::directory() . $name;
+        }
 
         if (!in_array($file, get_included_files())) {
-            require $file;
-            self::$loaded_plugins[] = $file;
+            require realpath($file);
+            self::$loaded_plugins[] = realpath($file);
         }
     }
 
