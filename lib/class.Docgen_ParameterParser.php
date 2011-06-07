@@ -20,6 +20,9 @@ class Docgen_ParameterParser extends ReflectionParameter {
             $this->getDeclaringClass()->name : null;
         $info['function_name'] = $this->getDeclaringFunction()->name;
 
+        // class_type is the Class of the variable if it uses type hinting.
+        $info['class_type'] = $this->getClass() ? $this->getClass()->getName() : null;
+
         if ($this->isOptional()) {
                 $info['default_value'] = $this->getDefaultValue();
         }

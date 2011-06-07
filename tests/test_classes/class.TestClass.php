@@ -25,5 +25,13 @@ class TestClass {
     public function test($param, $param2 = 'default') {
 
     }
+
+    private function test_private() {
+
+    }
+
+    function just_a_func() {
+
+    }
 }
 

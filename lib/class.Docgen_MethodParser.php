@@ -127,6 +127,15 @@ class Docgen_MethodParser extends ReflectionMethod {
         $info["returns_reference"] = $this->returnsReference();
         $info["no_of_parameters"] = $this->getNumberOfParameters();
         $info["no_of_required_parameters"] = $this->getNumberOfRequiredParameters();
+        $info['class_name'] = $this->getDeclaringClass()->getName();
+        $info['is_abstract'] = $this->isAbstract();
+        $info['is_constructor'] = $this->isConstructor();
+        $info['is_destructor'] = $this->isDestructor();
+        $info['is_fianl'] = $this->isFinal();
+        $info['is_private'] = $this->isPrivate();
+        $info['is_protected'] = $this->isProtected();
+        $info['is_public'] = $this->isPublic();
+        $info['is_static'] = $this->isStatic();
 
         $info["parameters"] = $this->getParametersTemplateInfo();
 
