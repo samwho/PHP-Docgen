@@ -2,7 +2,7 @@
 <?php
 require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
 
-class Docgen_JSONParser extends Docgen_Application {
+class Docgen_JSONParser extends Abstract_Docgen_Application {
 
     public function go() {
         // Check to see if a glob was passed at the command line.

@@ -123,6 +123,20 @@ class Docgen_ClassParser extends ReflectionClass {
     }
 
     /**
+     * Gets the source code of this class.
+     *
+     * @return string Class source code.
+     */
+    public function getSource() {
+        if( !file_exists( $this->getFileName() ) ) return false;
+
+        $start_offset = ( $this->getStartLine() - 1 );
+        $end_offset   = ( $this->getEndLine() - $this->getStartLine() ) + 1;
+
+        return join( '', array_slice( file( $this->getFileName() ), $start_offset, $end_offset ) );
+    }
+
+    /**
      * Overriding the ReflectionClass version of this method. This one does the
      * same thing but instead of returning a ReflectionClass, it returns a
      * Docgen_ClassParser.
@@ -279,6 +293,8 @@ class Docgen_ClassParser extends ReflectionClass {
 
         // Add property information.
         $info["properties"] = $this->getPropertiesTemplateInfo();
+
+        $info['source'] = $this->getSource();
 
         // Call the class info hooks and return the result.
         return Docgen_Hooks::call(self::$hook_name, array($info));

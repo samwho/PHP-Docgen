@@ -110,6 +110,19 @@ class Docgen_MethodParser extends ReflectionMethod {
         return $return;
     }
 
+   /**
+    * Gets the source code of this class.
+    *
+    * @return string Class source code.
+    */
+   public function getSource() {
+       if( !file_exists( $this->getFileName() ) ) return false;
+
+       $start_offset = ( $this->getStartLine() - 1 );
+       $end_offset   = ( $this->getEndLine() - $this->getStartLine() ) + 1;
+
+       return join( '', array_slice( file( $this->getFileName() ), $start_offset, $end_offset ) );
+   }
 
     /**
      * Returns an associative array of information on this method that will be
@@ -136,6 +149,7 @@ class Docgen_MethodParser extends ReflectionMethod {
         $info['is_protected'] = $this->isProtected();
         $info['is_public'] = $this->isPublic();
         $info['is_static'] = $this->isStatic();
+        $info['source'] = $this->getSource();
 
         $info["parameters"] = $this->getParametersTemplateInfo();
 

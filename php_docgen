@@ -3,11 +3,57 @@
 // Require the lazy loader. This will auto load classes for you.
 require_once dirname(__FILE__) . '/lib/class.Docgen_LazyLoader.php';
 
-// Parse the command line args into something more usable.
-$args = Docgen_CommandLineUtils::parseArgs($argv);
+class Docgen_Application extends Abstract_Docgen_Application {
+    public function go() {
+        // Require the call to have a glob, a template and a file to output to.
+        if (!isset($this->args['glob']) ||
+            !isset($this->args['template']) ||
+            !isset($this->args['file'])) {
+
+            $this->log->error('Incorrect script usage. Please run php_docgen --help for more details.');
+            exit;
+        }
+
+        // Extract command line args into separate variables.
+        $glob = $this->args['glob'];
+        $template = $this->args['template'];
+        $output_file = $this->args['file'];
+
+        // Fail if the template specified does not exist.
+        if (!file_exists($template)) {
+            $this->log->error('The template "' . $template . '" could not be found. Are you sure that' .
+                ' you specified a valid path?');
+            exit;
+        }
+
+        // Search for classes in the glob specified.
+        $search = new Docgen_CodeSearch();
+        $search->findClasses($glob);
+
+        // Add an init script if one is specified. An init script is something that your
+        // code may require to load classes correctly. Such as a script that registers
+        // a class loader, maybe.
+        if (isset($this->args['init'])) {
+            $search->addInitScript($this->args['init']);
+        }
+
+        // Parse the class list and output them to files.
+        $parser = new Docgen_Parser($search->getClassList());
+        $parser->parseAllToFile($template, $output_file);
+
+        // Generate a toctree if the --toctree argument is passed.
+        if (isset($this->args['toctree'])) {
+            $parser->generateTocTree(dirname($output_file) . 'index.rst');
+        }
+    }
+
+    protected function help() {
+        //TODO Write this.
+    }
+}
 
 // Create the application.
 $app = new Docgen_Application($args);
 
 $app->go();
-?>
+
