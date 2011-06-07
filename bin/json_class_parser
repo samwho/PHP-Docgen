@@ -1,7 +1,18 @@
 #!/usr/bin/env php
 <?php
-require_once dirname(__FILE__) . '/../lib/class.LazyLoader.php';
+require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
 
-class DocGenJSONParser extends Application {
+class Docgen_JSONParser extends Docgen_Application {
+    public function go() {
+        $search = new Docgen_CodeSearch();
+        $search->findClasses(dirname(__FILE__) . '/../tests/test_classes/*.php');
 
+        $parser = new Docgen_Parser($search->getClassList());
+
+        $json = json_encode($parser->getAllClassInfo());
+        return Docgen_ParserUtils::indentJSON($json);
+    }
 }
+
+$app = new Docgen_JSONParser();
+echo $app->go();

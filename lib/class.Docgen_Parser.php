@@ -190,6 +190,23 @@ class Docgen_Parser {
     }
 
     /**
+     * Gets an array of all of the class info currently stored in the CodeSearch
+     * object.
+     *
+     * Simply loops through all of the classes in the internal class list and
+     * calls getClassInfo on them.
+     *
+     * @return array An array of class info.
+     */
+    public function getAllClassInfo() {
+        $return = array();
+        foreach($this->class_list as $class_name => $file_location) {
+            $return[] = $this->getClassInfo($class_name);
+        }
+        return $return;
+    }
+
+    /**
      * A simple wrapper to the Dwoo get() method.
      *
      * @param string $template Path to the template to use.

@@ -11,7 +11,7 @@ class Docgen_ParserUtils {
      * that denote the fact that it's a comment.
      */
     public static function stripCommentStars($comment) {
-        return preg_replace('/^\s*\/?\*{1,2}\s?\/?/m', '', $comment);
+        return preg_replace('/^[ \t]*\/?\*{1,2}[ \t]?\/?/m', '', $comment);
     }
 
     /**

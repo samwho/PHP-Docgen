@@ -4,7 +4,14 @@ class Docgen_Application {
     protected $args;
     protected $log;
 
-    public function __construct($parsed_args) {
+    public function __construct($parsed_args = null) {
+        // If no argument is passed to the constructor, parse the command
+        // line arguments personally.
+        if (is_null($parsed_args)) {
+            global $argv;
+            $parsed_args = Docgen_CommandLineUtils::parseArgs($argv);
+        }
+
         $this->args = $parsed_args;
         $this->initialize();
     }
