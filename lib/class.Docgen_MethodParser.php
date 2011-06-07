@@ -63,7 +63,7 @@ class Docgen_MethodParser extends ReflectionMethod {
         $info["docblock"] = $this->getDocCommentWithoutTags();
 
         $info["modifiers"] = implode(' ', Reflection::getModifierNames($this->getModifiers()));
-        $info["lines_of_code"] = $this->getEndLine() - $this->getStartLine();
+        $info["lines_of_code"] = $this->getEndLine() - $this->getStartLine() + 1;
         $info["name"] = $this->getName();
         $info["short_name"] = $this->getShortName();
         $info["returns_reference"] = $this->returnsReference();
