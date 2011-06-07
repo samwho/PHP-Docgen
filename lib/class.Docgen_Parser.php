@@ -65,8 +65,8 @@ class Docgen_Parser {
     /**
      * The constructor takes a single argument: a list of classes to parse.
      *
-     * This class list must strictly contain a list of class_name=>file_location
-     * key value pairs. e.g. "Parser"=>"/path/to/Parser.php".
+     * This class list must strictly contain a list of file_location => array
+     * of class names key value pairs. e.g. /path/to/Parser.php" => array("Parser")
      *
      * This list of classes will be loaded in before parsing. If you get any
      * unexpected errors, check for naming conflicts between your classes
@@ -94,7 +94,7 @@ class Docgen_Parser {
         }
 
         // Include all of the class files.
-        foreach($this->class_list as $name => $file) {
+        foreach($this->class_list as $file => $class_name_array) {
             require_once $file;
         }
 
@@ -106,14 +106,16 @@ class Docgen_Parser {
      * This method calls the parseClass method on all classes in the list
      * you passed to the constructor.
      *
-     * The class list array must be a class_name=>file_location set of key
-     * value pairs. e.g. "Parser"=>"/path/to/Parser.php".
+     * The class list array must be a file_location => class_name array set of key
+     * value pairs. e.g. "/path/to/Parser.php" => array("Parser")
      *
      * The $template and $to parameters get passed to parseClass appropriately.
      */
     public function parseAllToFile($template, $to) {
-        foreach($this->class_list as $class_name => $file) {
-            $this->parseClass($class_name, $template, $to);
+        foreach($this->class_list as $file => $class_name_array) {
+            foreach($class_name_array as $class_name) {
+                $this->parseClass($class_name, $template, $to);
+            }
         }
     }
 
@@ -200,8 +202,10 @@ class Docgen_Parser {
      */
     public function getAllClassInfo() {
         $return = array();
-        foreach($this->class_list as $class_name => $file_location) {
-            $return[] = $this->getClassInfo($class_name);
+        foreach($this->class_list as $file_location => $class_name_array) {
+            foreach($class_name_array as $class_name) {
+                $return[] = $this->getClassInfo($class_name);
+            }
         }
         return $return;
     }
@@ -243,11 +247,13 @@ class Docgen_Parser {
         $classes = array('classes' => array());
 
         // Converts the class list into an array that's more usable in a .tpl
-        foreach($this->class_list as $class_name => $file) {
-            $info = array();
-            $info["name"] = $class_name;
-            $info["location"] = $file;
-            $classes['classes'][] = $info;
+        foreach($this->class_list as $file => $class_name_array) {
+            foreach($class_name_array as $class_name) {
+                $info = array();
+                $info["name"] = $class_name;
+                $info["location"] = $file;
+                $classes['classes'][] = $info;
+            }
         }
 
         return $classes;

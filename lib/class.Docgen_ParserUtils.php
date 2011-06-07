@@ -1,6 +1,11 @@
 <?php
 class Docgen_ParserUtils {
 
+    /**
+     * This regex matches the @tags in comments.
+     *
+     * @var string
+     */
     private static $tag_match_regex = '/^\s*@([a-z]+)\s+(.*?)(?=\z|^\s*@[a-z]+\s)/sm';
 
     /**

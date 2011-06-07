@@ -3,12 +3,23 @@
 require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
 
 class Docgen_JSONParser extends Docgen_Application {
-    public function go() {
-        $search = new Docgen_CodeSearch();
-        $search->findClasses(dirname(__FILE__) . '/../tests/test_classes/*.php');
 
+    public function go() {
+        // Check to see if a glob was passed at the command line.
+        if (isset($this->args['glob'])) {
+            $glob = $this->args['glob'];
+        } else {
+            $glob = dirname(__FILE__) . '/../tests/test_classes/*.php';
+        }
+
+        // Search using the glob.
+        $search = new Docgen_CodeSearch();
+        $search->findClasses($glob);
+
+        // Get a parser from the resulting class list.
         $parser = new Docgen_Parser($search->getClassList());
 
+        // JSON encode all of the class info and return it.
         $json = json_encode($parser->getAllClassInfo());
         return Docgen_ParserUtils::indentJSON($json);
     }
