@@ -6,13 +6,9 @@ Work in progress.
 TODO
 ====
 
-I accidentally created two test directories. Pick one, Sam.
-
 Need to write tests.
 
 Need to look closer at the Docgen_Application and make it into an abstract class for users to implement.
-
-Currently, the Docgen_CodeSearch class only finds one class per file. This isn't necessarily the case in some codebases.
 
 The Docgen_CodeSearch class could probably use some extra helpful methods, too. For finding functions, maybe.
 
