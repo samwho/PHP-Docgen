@@ -25,57 +25,6 @@ class Parser {
     private $dwoo_compiler;
 
     /**
-     * @var array An array of callbacks.
-     */
-    private static $class_filters = array();
-
-    /**
-     * @var array An array of callbacks.
-     */
-    private static $class_list_filters = array();
-
-    /**
-     * @var array An array of compiler hooks.
-     */
-    private static $compiler_hooks = array();
-
-    /**
-     * @var array An array of file name filter callbacks.
-     */
-    private static $file_name_filters = array();
-
-    /**
-     * Hook a class filter to the Parser. This allows you to edit class information
-     * before it gets sent to the template parser.
-     *
-     * For every class that gets parsed, your callback function will get sent the
-     * associative array of information that represents it and the return value
-     * from your callback will be the new template data. Because of this, it is
-     * imperative that you return something usable for your selected template.
-     *
-     * @param callback $callback A callback that will eventually get passed in to
-     * the call_user_func method.
-     */
-    public static function addClassFilter($callback) {
-        self::$class_filters[] = $callback;
-    }
-
-    /**
-     * Hook a class list filter to the Parser. What this does is, before classes
-     * are actually loaded, gives whatever callback you specify the list of classes
-     * and sets the list to whatever you return.
-     *
-     * This gives you the power to add in files or remove files that you may or may
-     * not want in the list.
-
-     * @param callback $callback A callback that will eventually get passed in to
-     * the call_user_func method.
-     */
-    public static function addClassListFilter($callback) {
-        self::$class_list_filters[] = $callback;
-    }
-
-    /**
      * Hook a compiler modification into the Parser. Dwoo has a Dwoo_Compiler
      * class that allows you to set custom pre/post-processors and edit how
      * the templates are compiled.
@@ -91,7 +40,7 @@ class Parser {
      * object at the start of the program.
      */
     public static function addCompilerHook($callback) {
-        self::$compiler_hooks[] = $callback;
+        Hooks::add('compiler_created', $callback);
     }
 
     /**
@@ -109,8 +58,8 @@ class Parser {
      * @param callback $callback A callback that will be called with the
      * file name and the class info for each class being parsed.
      */
-    public static function addFileNameFilter($callback) {
-        self::$file_name_filters[] = $callback;
+    public static function addFileNameHook($callback) {
+        Hooks::add('file_name', $callback);
     }
 
     /**
@@ -126,12 +75,10 @@ class Parser {
     public function __construct($class_list) {
         $this->class_list = $class_list;
         $this->dwoo = new Dwoo();
-        $this->dwoo_compiler = new Dwoo_Compiler();
 
-        // Execute the compiler hook callbacks
-        foreach(self::$compiler_hooks as $callback) {
-            $this->dwoo_compiler = call_user_func($callback, $this->dwoo_compiler);
-        }
+        // Create a Dwoo_Compiler and call the hooks on it.
+        $this->dwoo_compiler = Hooks::call('compiler_created',
+            array(new Dwoo_Compiler()));
 
         $this->loadClasses();
     }
@@ -140,11 +87,6 @@ class Parser {
      * Loads all of the classes in the $this->class_list variable.
      */
     private function loadClasses() {
-        // Apply user defined class list filters.
-        foreach(self::$class_list_filters as $callback) {
-            $this->class_list = call_user_func($callback, $this->class_list);
-        }
-
         // Require and remove the special __init__ file. (for adding a loader if needed)
         if (isset($this->class_list['__init__'])) {
             require_once $this->class_list['__init__'];
@@ -155,6 +97,9 @@ class Parser {
         foreach($this->class_list as $name => $file) {
             require_once $file;
         }
+
+        // Call the classes_loaded hook.
+        Hooks::call('classes_loaded');
     }
 
     /**
@@ -199,22 +144,11 @@ class Parser {
         // Begin parsing. Status messages ftw.
         echo "Parsing $class_name... ";
 
-        // Create the ClassParser object and parse the :class_name variable in the
-        // file path.
-        $class = new ClassParser($class_name);
-
         // Get the array of information to send to the template.
-        $template_info = $class->templateInfo();
-
-        // Apply user defined class info filters.
-        foreach(self::$class_filters as $callback) {
-            $template_info = call_user_func($callback, $template_info);
-        }
+        $template_info = $this->getClassInfo($class_name);
 
         // Apply file name filters.
-        foreach(self::$file_name_filters as $callback) {
-            $to = call_user_func($callback, $to, $template_info);
-        }
+        $to = Hooks::call('file_name', array($to, $template_info));
 
         // Make sure that the directory exists.
         if (!file_exists(dirname($to))) {
@@ -225,9 +159,8 @@ class Parser {
             }
         }
 
-
         // Parse the template using the Dwoo template framework.
-        $data = $this->dwoo->get($template, $template_info, $this->dwoo_compiler);
+        $data = $this->parse($template, $template_info, $this->dwoo_compiler);
 
         // Write the parsed template to file.
         file_put_contents($to, $data);
@@ -237,14 +170,70 @@ class Parser {
     }
 
     /**
+     * This is an important method. It takes a class name and returns a huge
+     * array of information on that class.
+     *
+     * It is also responsible for applying the class filter plugins to the
+     * data that is returned. The array returned from this method will have
+     * been passed through all registered class filter callbacks.
+     *
+     * @param string $class_name The name of the class to gether info on.
+     * @return
+     */
+    public function getClassInfo($class_name) {
+        // Create the ClassParser object and parse the :class_name variable in the
+        // file path.
+        $class = new ClassParser($class_name);
+
+        // Get the array of information to send to the template.
+        return $class->templateInfo();
+    }
+
+    /**
      * A simple wrapper to the Dwoo get() method.
      *
      * @param string $template Path to the template to use.
      * @param string $data The data to pass to the template.
+     * @param Dwoo_Compiler The compiler to use for the parse.
      * @return The parsed template.
      */
-    public function parse($template, $data) {
-        return $this->dwoo->get($template, $data);
+    public function parse($template, $data, $compiler = null) {
+        return $this->dwoo->get($template, $data, $compiler);
+    }
+
+    /**
+     * Returns the class list but in a more template friendly array format.
+     *
+     * For example, if you had this class list:
+     *
+     * 'MyClass' => '/path/to/lib/MyClass.php'
+     * 'YourClass => '/path/to/lib/YourClass.php'
+     *
+     * This method would return:
+     *
+     * 'classes' => array(
+     *      [0] => (
+     *          'name' => 'MyClass',
+     *          'location' => '/path/to/lib/MyClass.php'
+     *      )
+     *      [1] => (
+     *          'name' => 'YourClass',
+     *          'location' => '/path/to/lib/YourClass.php'
+     *      )
+     * );
+     */
+    public function templateFriendlyClassList() {
+        $classes = array('classes' => array());
+
+        // Converts the class list into an array that's more usable in a .tpl
+        foreach($this->class_list as $class_name => $file) {
+            $info = array();
+            $info["name"] = $class_name;
+            $info["location"] = $file;
+            $classes['classes'][] = $info;
+        }
+
+        return $classes;
     }
 
     /**
@@ -258,18 +247,13 @@ class Parser {
      */
     public function generateTocTree($to) {
         echo 'Generating TOC tree... ';
-        $classes = array('classes' => array());
 
-        // Converts the class list into an array that's more usable in a .tpl
-        foreach($this->class_list as $class_name => $file) {
-            $info = array();
-            $info["name"] = $class_name;
-            $info["location"] = $file;
-            $classes['classes'][] = $info;
-        }
-
+        $classes = $this->templateFriendlyClassList();
         $data = $this->parse(dirname(__FILE__) . '/../templates/rst_toc.tpl', $classes);
-        file_put_contents($to, $data);
-        echo 'Finished.' . "\n";
+        if (file_put_contents($to, $data)) {
+            echo 'Finished.' . "\n";
+        } else {
+            echo 'Failed.' . "\n";
+        }
     }
 }

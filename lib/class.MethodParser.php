@@ -1,6 +1,23 @@
 <?php
 
 class MethodParser extends ReflectionMethod {
+    private static $hook_name = 'method_info';
+
+    /**
+     * Add a method hook. This allows you to edit method information
+     * before it gets sent to the template parser.
+     *
+     * For every method that gets parsed, your callback function will get sent the
+     * associative array of information that represents it and the return value
+     * from your callback will be the new template data. Because of this, it is
+     * imperative that you return something usable for your selected template.
+     *
+     * @param callback $callback A callback that will eventually get passed in to
+     * the call_user_func method.
+     */
+    public static function addHook($callback) {
+        Hooks:add(self::$hook_name, $callback);
+    }
 
     /**
      * Overridden from the original behaviour of ReflectionMethod. This now
@@ -71,6 +88,7 @@ class MethodParser extends ReflectionMethod {
             $info["parameters"][] = $parameter_info;
         }
 
-        return $info;
+        // Pass the method info through the registered hooks and return it.
+        return Hooks::call(self::$hook_name, array($info));
     }
 }

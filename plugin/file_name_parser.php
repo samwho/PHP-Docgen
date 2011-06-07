@@ -5,7 +5,7 @@ class FileNameParser {
      * parse method on the current object.
      */
     public function __construct() {
-        Parser::addFileNameFilter(array($this, 'parse'));
+        Parser::addFileNameHook(array($this, 'parse'));
     }
 
     /**

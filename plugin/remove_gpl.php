@@ -10,12 +10,12 @@ class LicenseRemoval {
      * The constructor will add all of the callbacks to the necessary places.
      */
     public function __construct() {
-        // Add a class filter. This filter will be passed one argument and that
+        // Add a class hook. The callback will be passed one argument and that
         // will be the entire array of information on that class.
         //
         // I advise having a play around with the data you will have access to
         // before starting :)
-        Parser::addClassFilter(array($this, 'removeGplText'));
+        ClassParser::addHook(array($this, 'removeGplText'));
     }
 
     /**

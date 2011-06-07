@@ -1,5 +1,22 @@
 <?php
 class ClassParser extends ReflectionClass {
+    private static $hook_name = 'class_info';
+
+    /**
+     * All a class info hook. This allows you to edit class information
+     * before it gets sent to the template parser.
+     *
+     * For every class that gets parsed, your callback function will get sent the
+     * associative array of information that represents it and the return value
+     * from your callback will be the new template data. Because of this, it is
+     * imperative that you return something usable for your selected template.
+     *
+     * @param callback $callback A callback that will eventually get passed in to
+     * the call_user_func method.
+     */
+    public static function addHook($callback) {
+        Hooks::add(self::$hook_name, $callback);
+    }
 
     /**
      * Overridden from the original behaviour of ReflectionClass. This now
@@ -131,7 +148,7 @@ class ClassParser extends ReflectionClass {
             $info["properties"][] = $property_class->templateInfo();
         }
 
-        // Return the info.
-        return $info;
+        // Call the class info hooks and return the result.
+        return Hooks::call(self::$hook_name, array($info));
     }
 }

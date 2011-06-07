@@ -1,6 +1,25 @@
 <?php
 
 class PropertyParser extends ReflectionProperty {
+    private static $hook_name = 'property_info';
+
+    /**
+     * Add a property info hook. This allows you to edit property information
+     * before it gets sent to the template parser.
+     *
+     * For every property that gets parsed, your callback function will get sent the
+     * associative array of information that represents it and the return value
+     * from your callback will be the new template data. Because of this, it is
+     * imperative that you return something usable for your selected template.
+     *
+     * @param callback $callback A callback that will eventually get passed in to
+     * the call_user_func method.
+     */
+    public static function addHook($callback) {
+        Hoooks:add(self::$hook_name, $callback);
+    }
+
+
     /**
      * Overridden from the original behaviour of ReflectionProperty. This now
      * returns a string that _does not_ contain the starts multiline comment
@@ -49,6 +68,7 @@ class PropertyParser extends ReflectionProperty {
         $info["docblock"] = $this->getDocCommentWithoutTags();
         $info["tags"] = $this->getDocTags();
 
-        return $info;
+        // Pass the property info through registered property info hooks and return it.
+        return Hooks::call(self::$hook_name, array($info));
     }
 }
