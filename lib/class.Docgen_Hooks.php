@@ -62,10 +62,13 @@ class Docgen_Hooks {
             //
             // This allows for modification of values without having to pass
             // references around.
+
+            $keys = array_keys($args);
+            $first_key = $keys[0];
             foreach($callbacks as $callback) {
-                $args[0] = call_user_func_array($callback, $args);
+                $args[$first_key] = call_user_func_array($callback, $args);
             }
-            return $args[0];
+            return $args[$first_key];
         }
     }
 

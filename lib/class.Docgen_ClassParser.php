@@ -113,10 +113,10 @@ class Docgen_ClassParser extends ReflectionClass {
     /**
      * Returns the number of lines of code in this class.
      *
-     * @return int Lines of code in this clas.
+     * @return int Lines of code in this class.
      */
     public function linesOfCode() {
-        // The +1 on the end does make sense, hones. Imagine a class that
+        // The +1 on the end does make sense, honest. Imagine a class that
         // starts on line 7 and ends on line 9. It isn't 2 lines of code,
         // it's 3.
         return $this->getEndLine() - $this->getStartLine() + 1;

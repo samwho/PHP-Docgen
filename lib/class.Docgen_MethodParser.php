@@ -54,6 +54,64 @@ class Docgen_MethodParser extends ReflectionMethod {
     }
 
     /**
+     * Returns the modifier string for this method.
+     *
+     * e.g. "public static", "private" etc.
+     *
+     * @return string The modifier string for this method. If there is none,
+     * returns an empty string.
+     */
+    public function getModifierString() {
+        // Pass the modifiers of this class (which are returned as a very unhelpful
+        // integer) to a helper class to decipher them. The result is a string like
+        // "public static" or "private" etc.
+        return implode(' ', Reflection::getModifierNames($this->getModifiers()));
+    }
+
+    /**
+     * Returns the number of lines of code in this method.
+     *
+     * @return int Lines of code in this method.
+     */
+    public function linesOfCode() {
+        // The +1 on the end does make sense, honest. Imagine a method that
+        // starts on line 7 and ends on line 9. It isn't 2 lines of code,
+        // it's 3.
+        return $this->getEndLine() - $this->getStartLine() + 1;
+    }
+
+    /**
+     * Override of the parent method getParameters, this does exactly the same thing but
+     * instead of returning an array of ReflectionParameter objects, it returns an
+     * array of Docgen_ParameterParser objects.
+     *
+     * @return array An array of Docgen_ParameterParser objects. Array is empty if no
+     * parameters exist for this method.
+     */
+    public function getParameters() {
+        $return = array();
+        foreach(parent::getParameters() as $parameter) {
+            $return[$parameter->name] =
+                new Docgen_ParameterParser(array($this->getDeclaringClass()->getName(), $this->getName()), $parameter->getName());
+        }
+        return $return;
+    }
+
+    /**
+     * Gets an array of template information on this method's parameters.
+     *
+     * @return array Template information for this method's parameters.
+     */
+    public function getParametersTemplateInfo() {
+        $return = array();
+        foreach($this->getParameters() as $parameter) {
+            $return[] = $parameter->templateInfo();
+        }
+        return $return;
+    }
+
+
+    /**
      * Returns an associative array of information on this method that will be
      * sent the template for parsing.
      */
@@ -62,31 +120,15 @@ class Docgen_MethodParser extends ReflectionMethod {
         $info["tags"] = $this->getDocTags();
         $info["docblock"] = $this->getDocCommentWithoutTags();
 
-        $info["modifiers"] = implode(' ', Reflection::getModifierNames($this->getModifiers()));
-        $info["lines_of_code"] = $this->getEndLine() - $this->getStartLine() + 1;
+        $info["modifiers"] = $this->getModifierString();
+        $info["lines_of_code"] = $this->linesOfCode();
         $info["name"] = $this->getName();
         $info["short_name"] = $this->getShortName();
         $info["returns_reference"] = $this->returnsReference();
         $info["no_of_parameters"] = $this->getNumberOfParameters();
-        $info["no_of__required_parameters"] = $this->getNumberOfRequiredParameters();
+        $info["no_of_required_parameters"] = $this->getNumberOfRequiredParameters();
 
-        $info["parameters"] = array();
-        foreach($this->getParameters() as $parameter) {
-            $parameter_info = array(
-                'name' => $parameter->getName(),
-                'position' => $parameter->getPosition(),
-                'is_array' => $parameter->isArray(),
-                'is_optional' => $parameter->isOptional(),
-                'is_passed_by_reference' => $parameter->isPassedByReference(),
-                'is_default_value_available' => $parameter->isDefaultvalueAvailable()
-            );
-
-            if ($parameter->isOptional()) {
-                $parameter_info["default_value"] = $parameter->getDefaultValue();
-            }
-
-            $info["parameters"][] = $parameter_info;
-        }
+        $info["parameters"] = $this->getParametersTemplateInfo();
 
         // Pass the method info through the registered hooks and return it.
         return Docgen_Hooks::call(self::$hook_name, array($info));
