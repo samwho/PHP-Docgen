@@ -1,0 +1,63 @@
+#!/usr/bin/env php
+<?php
+require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
+
+/**
+ * This is the class used to generate class reference documentation for Gina Trapani's
+ * ThinkUp.
+ */
+class GenerateThinkUpDocs extends Abstract_Docgen_Application {
+    public function go() {
+        if (!isset($this->args['tudir'])) {
+            echo "You must specify a path to your ThinkUp directory. " .
+                "Please try again but with the --tudir=<thinkup_dir> set with " .
+                "a trailing forwardslash.\n";
+            exit;
+        }
+
+        $tudir = $this->args['tudir'];
+
+        // Require the init.php file. Otherwise classes won't load.
+        require_once $tudir . 'init.php';
+
+        $models_class_list = $this->search->findClasses($tudir . '_lib/model/*.php');
+        $controllers_class_list = $this->search->findClasses($tudir . '_lib/controller/*.php');
+        $models = new Docgen_Parser($models_class_list);
+        $controllers = new Docgen_Parser($controllers_class_list);
+
+        $models_to = $tudir . '../docs/source/reference/models/:class_name.rst';
+        $controllers_to = $tudir . '../docs/source/reference/controllers/:class_name.rst';
+        $models_toc_tree = $tudir . '../docs/source/reference/models/index.rst';
+        $controllers_toc_tree = $tudir . '../docs/source/reference/controllers/index.rst';
+
+        $controllers_toc_data = array(
+            'title' => 'Controllers',
+            'message' => 'The following is method/class reference documentation for ' .
+                         'ThinkUp\'s controllers.'
+        );
+
+        $models_toc_data = array(
+            'title' => 'Models',
+            'message' => 'The following is method/class reference documentation for ' .
+                         'ThinkUp\'s models.'
+
+        );
+
+        $template = $this->docgen_template_dir . '/class_rst.tpl';
+
+        $models->parseAllToFile($template, $models_to);
+        $models->generateTocTree($models_toc_tree, $models_toc_data);
+        $controllers->parseAllToFile($template, $controllers_to);
+        $controllers->generateTocTree($controllers_toc_tree, $controllers_toc_data);
+
+        // If the -b or --build options are supplied, run "make html" in the doc source
+        // directory. This builds the documentation HTML.
+        if (isset($this->args['b']) || isset($this->args['build'])) {
+            chdir($tudir . '../docs/');
+            exec('make html');
+        }
+    }
+}
+
+$app = new GenerateThinkUpDocs();
+$app->go();

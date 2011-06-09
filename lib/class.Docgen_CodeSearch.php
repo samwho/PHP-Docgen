@@ -35,18 +35,24 @@ class Docgen_CodeSearch {
      *
      * @param glob $glob A valid glob (docs on globs:
      * http://en.wikipedia.org/wiki/Glob_(programming) )
+     *
+     * @return array Returns only the new classes found. For an array of all
+     * classes found in all searches, see getClassList() in this class.
      */
     public function findClasses($glob) {
+        $new_classes = array();
         foreach(glob($glob) as $file) {
             $result = $this->scanForClasses($file);
 
             // scanForClasses returns an array on success
             if (is_array($result)) {
-                $this->class_list = array_merge($this->class_list, $result);
+                $new_classes = array_merge($new_classes, $result);
             }
         }
 
-        return $this->class_list;
+        $this->class_list = array_merge($this->class_list, $new_classes);
+
+        return $new_classes;
     }
 
     /**

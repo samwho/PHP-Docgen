@@ -15,17 +15,17 @@ class Docgen_JSONParser extends Abstract_Docgen_Application {
         }
 
         // Search using the glob.
-        $search = new Docgen_CodeSearch();
-        $search->findClasses($glob);
+        $this->search->findClasses($glob);
 
         // Get a parser from the resulting class list.
-        $parser = new Docgen_Parser($search->getClassList());
+        $this->parser->addClasses($this->search->getClassList());
 
         // JSON encode all of the class info and return it.
-        $json = json_encode($parser->getAllClassInfo());
+        $json = json_encode($this->parser->getAllClassInfo());
         return Docgen_ParserUtils::indentJSON($json);
     }
 }
 
+// Create the app and run it :)
 $app = new Docgen_JSONParser();
 echo $app->go();

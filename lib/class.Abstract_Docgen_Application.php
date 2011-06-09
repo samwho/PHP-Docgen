@@ -12,6 +12,26 @@ abstract class Abstract_Docgen_Application {
     protected $log;
 
     /**
+     * @var Docgen_CodeSearch
+     */
+    protected $search;
+
+    /**
+     * @var Docgen_Parser
+     */
+    protected $parser;
+
+    /**
+     * @var string Path to the docgen base directory.
+     */
+    protected $docgen_base_dir;
+
+    /**
+     * @var string Path to the docgen default templates.
+     */
+    protected $docgen_template_dir;
+
+    /**
      * The constructor handles parsing command line arguments (if they are not
      * passed in to the constructor explicitly), storing those args in the
      * $this->args instance variable and calling the initialize method of
@@ -69,6 +89,12 @@ abstract class Abstract_Docgen_Application {
 
         // Get the main application log object.
         $this->log = Docgen_Log::getMainLog();
+
+        $this->search = new Docgen_CodeSearch();
+        $this->parser = new Docgen_Parser();
+
+        $this->docgen_base_dir = realpath(dirname(__FILE__) . '/../');
+        $this->docgen_template_dir = $this->docgen_base_dir . '/templates';
     }
 
     /**

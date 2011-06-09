@@ -286,10 +286,11 @@ class Docgen_Parser {
      *
      * @param string $to Where to store this TOC tree.
      */
-    public function generateTocTree($to) {
+    public function generateTocTree($to, $additional_data = array()) {
         echo 'Generating TOC tree... ';
 
         $classes = $this->templateFriendlyClassList();
+        $classes = array_merge($additional_data, $classes);
         $data = $this->parse(dirname(__FILE__) . '/../templates/rst_toc.tpl', $classes);
         if (file_put_contents($to, $data)) {
             echo 'Finished.' . "\n";

@@ -1,8 +1,7 @@
-Class/Method Reference
-======================
+{$title}
+{regex_replace $title "/./" "="}
 
-Welcome to the ThinkUp class and method reference. These docs are generated automatically
-from comments in the source code.
+{$message}
 
 .. toctree::
    :maxdepth: 3
