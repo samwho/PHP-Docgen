@@ -67,6 +67,7 @@ class Docgen_PropertyParser extends ReflectionProperty {
         $info["value"] = $this->getValue($this);
         $info["docblock"] = $this->getDocCommentWithoutTags();
         $info["tags"] = $this->getDocTags();
+        $info['declaring_class'] = $this->getDeclaringClass()->getName();
 
         // Pass the property info through registered property info hooks and return it.
         return Docgen_Hooks::call(self::$hook_name, array($info));

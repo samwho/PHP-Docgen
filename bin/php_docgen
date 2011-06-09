@@ -30,13 +30,6 @@ class Docgen_Application extends Abstract_Docgen_Application {
         $search = new Docgen_CodeSearch();
         $search->findClasses($glob);
 
-        // Add an init script if one is specified. An init script is something that your
-        // code may require to load classes correctly. Such as a script that registers
-        // a class loader, maybe.
-        if (isset($this->args['init'])) {
-            $search->addInitScript($this->args['init']);
-        }
-
         // Parse the class list and output them to files.
         $parser = new Docgen_Parser($search->getClassList());
         $parser->parseAllToFile($template, $output_file);

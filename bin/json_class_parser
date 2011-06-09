@@ -9,6 +9,8 @@ class Docgen_JSONParser extends Abstract_Docgen_Application {
         if (isset($this->args['glob'])) {
             $glob = $this->args['glob'];
         } else {
+            // I use this for my test classes. If no argument is passed in
+            // at the command line, it just scans the test class directory.
             $glob = dirname(__FILE__) . '/../tests/test_classes/*.php';
         }
 

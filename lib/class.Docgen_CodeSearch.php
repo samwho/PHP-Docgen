@@ -23,20 +23,6 @@ class Docgen_CodeSearch {
     }
 
     /**
-     * Got a script that needs to run before your classes will play
-     * nicely together? Call this function with a path to that script.
-     *
-     * ThinkUp, for example, requires an initialisation script that
-     * registers an autoloader before its classes will work together.
-     *
-     * @param string $file Path to an init script. This script will
-     * get loaded before anything else.
-     */
-    public function addInitScript($file) {
-        $this->class_list['__init__'] = $file;
-    }
-
-    /**
      * Give this method a valid glob and it will scan all of the files that match
      * that glob and match class definitions.
      *

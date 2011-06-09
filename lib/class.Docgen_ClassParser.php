@@ -247,6 +247,11 @@ class Docgen_ClassParser extends ReflectionClass {
      * sent the template for parsing.
      */
     public function templateInfo() {
+        $cache = Docgen_Cache::getClassInfoCache();
+        if ($cache->exists($this->name)) {
+            return $cache->get($this->name);
+        }
+
         $info = array();
 
         // Add the MethodParser object template info to this array.
@@ -297,6 +302,8 @@ class Docgen_ClassParser extends ReflectionClass {
         $info['source'] = $this->getSource();
 
         // Call the class info hooks and return the result.
-        return Docgen_Hooks::call(self::$hook_name, array($info));
+        $info = Docgen_Hooks::call(self::$hook_name, array($info));
+        $cache->add($this->name, $info);
+        return $info;
     }
 }

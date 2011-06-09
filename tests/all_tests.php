@@ -18,6 +18,7 @@ $all_tests->add(new TestOfCommandLineUtils());
 $all_tests->add(new TestOfParserUtils());
 $all_tests->add(new TestOfHooks());
 $all_tests->add(new TestOfLog());
+$all_tests->add(new TestOfParser());
 
 // Run tests with a TextReporter
 $reporter = new TextReporter();

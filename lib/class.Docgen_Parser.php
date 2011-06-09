@@ -72,7 +72,7 @@ class Docgen_Parser {
      * unexpected errors, check for naming conflicts between your classes
      * and my classes :)
      */
-    public function __construct($class_list) {
+    public function __construct(array $class_list = array()) {
         $this->class_list = $class_list;
         $this->dwoo = new Dwoo();
 
@@ -84,18 +84,24 @@ class Docgen_Parser {
     }
 
     /**
+     * Adds classes to the parser. These classes will be loaded as soon
+     * as they are added. Beware of potential naming conflicts.
+     *
+     * @param array $classes An array of classes in the described class_list
+     * format. See the docblock for the constructor to this class.
+     */
+    public function addClasses(array $classes) {
+        $this->class_list = array_merge($this->class_list, $classes);
+        $this->loadClasses();
+    }
+
+    /**
      * Loads all of the classes in the $this->class_list variable.
      */
     private function loadClasses() {
-        // Require and remove the special __init__ file. (for adding a loader if needed)
-        if (isset($this->class_list['__init__'])) {
-            require_once $this->class_list['__init__'];
-            unset($this->class_list['__init__']);
-        }
-
         // Include all of the class files.
         foreach($this->class_list as $file => $class_name_array) {
-            require_once $file;
+            require_once realpath($file);
         }
 
         // Call the classes_loaded hook.

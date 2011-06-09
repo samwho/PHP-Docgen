@@ -20,9 +20,9 @@ class Docgen_Plugins {
      * class load plugins from tests/test_plugins/ instead of the normal
      * plugin/ directory.
      */
-    public static function loadAll($testing = false) {
+    public static function loadAll() {
         foreach(glob(self::directory() . '*.php') as $file) {
-            self::load(basename($file), $testing);
+            self::load(basename($file));
         }
 
         // Fire a hook that signifies all plugins have been loaded.
@@ -41,12 +41,8 @@ class Docgen_Plugins {
      *
      * @param string $name Plugin file name without path.
      */
-    public static function load($name, $testing = false) {
-        if ($testing) {
-            $file = self::directory() . '../tests/test_plugins/' . $name;
-        } else {
-            $file = self::directory() . $name;
-        }
+    public static function load($name) {
+        $file = self::directory() . $name;
 
         if (!in_array($file, get_included_files())) {
             require realpath($file);

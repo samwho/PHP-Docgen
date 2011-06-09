@@ -3,7 +3,7 @@
 class TestOfPlugins extends UnitTestCase {
 
     public function testLoadAllPlugins() {
-        Docgen_Plugins::loadAll($testing = true);
+        Docgen_Plugins::loadAll();
 
         $plugin_files = Docgen_Plugins::getLoadedPlugins();
 
@@ -11,11 +11,10 @@ class TestOfPlugins extends UnitTestCase {
         // we need to run the globbed files through realpath() to make sure the
         // comparison works.
         $comparison_files = array();
-        foreach(glob(dirname(__FILE__) . '/../test_plugins/*.php') as $file) {
+        foreach(glob(dirname(__FILE__) . '/../../plugin/*.php') as $file) {
             $comparison_files[] = realpath($file);
         }
 
         $this->assertEqual($plugin_files, $comparison_files);
     }
-
 }

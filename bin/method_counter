@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
-
+require_once '/home/sam/Dropbox/code/PHP/ThinkUp/webapp/init.php';
 class MethodCounter extends Abstract_Docgen_Application {
     private $method_count = 0;
     private $class_count = 0;
@@ -10,7 +10,6 @@ class MethodCounter extends Abstract_Docgen_Application {
         Docgen_ClassParser::addHook(array($this, 'count'));
 
         $search = new Docgen_CodeSearch();
-        $search->addInitScript('/home/sam/Dropbox/code/PHP/ThinkUp/webapp/init.php');
         $search->findClasses($this->args['glob']);
 
         $parser = new Docgen_Parser($search->getClassList());
@@ -25,6 +24,9 @@ class MethodCounter extends Abstract_Docgen_Application {
         echo $class_info['name'] . ' - ' . $methods . "\n";
         $this->class_count++;
         $this->method_count += $methods;
+
+        // It's still important to do this!
+        return $class_info;
     }
 }
 
