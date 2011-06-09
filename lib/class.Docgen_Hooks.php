@@ -79,4 +79,14 @@ class Docgen_Hooks {
     public static function exists($name) {
         return isset(self::$hooks[$name]);
     }
+
+    /**
+     * Resets the internal array of registered hooks so that nothing is
+     * registered any more.
+     *
+     * Only used for testing purposes.
+     */
+    public static function reset() {
+        self::$hooks = array();
+    }
 }

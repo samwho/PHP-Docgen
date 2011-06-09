@@ -60,6 +60,15 @@ class Docgen_Log {
     }
 
     /**
+     * Returns the last message that was logged.
+     *
+     * @return string Last logged message.
+     */
+    public function getLastMessage() {
+        return $this->messages[sizeof($this->messages) - 1];
+    }
+
+    /**
      * Log an error messsage. This will be prepended with [ERROR] and, if coloring
      * is enabled, will appear in red.
      *
@@ -78,6 +87,14 @@ class Docgen_Log {
      */
     public function message($message, $echo = true) {
         $this->log($message, $echo);
+    }
+
+    /**
+     * Resets the messages stored in the log. After a call to this method,
+     * a call to getMessages() will return an empty array.
+     */
+    public function reset() {
+        $this->messages = array();
     }
 
     /**

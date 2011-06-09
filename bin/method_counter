@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
+
+class MethodCounter extends Abstract_Docgen_Application {
+    private $method_count = 0;
+    private $class_count = 0;
+
+    public function go() {
+        Docgen_ClassParser::addHook(array($this, 'count'));
+
+        $search = new Docgen_CodeSearch();
+        $search->addInitScript('/home/sam/Dropbox/code/PHP/ThinkUp/webapp/init.php');
+        $search->findClasses($this->args['glob']);
+
+        $parser = new Docgen_Parser($search->getClassList());
+        $parser->getAllClassInfo();
+
+        echo $this->method_count . ' methods in ' . $this->class_count . ' classes.' . "\n";
+    }
+
+    public function count($class_info) {
+        $methods = sizeof($class_info['methods']);
+
+        echo $class_info['name'] . ' - ' . $methods . "\n";
+        $this->class_count++;
+        $this->method_count += $methods;
+    }
+}
+
+$app = new MethodCounter();
+$app->go();

@@ -11,12 +11,15 @@ class Docgen_ParserUtils {
     /**
      * Strips the stars and forward slashes from multiline comments.
      *
+     * Runs the result through trim() so that there's no whitespace before
+     * or after the comment.
+     *
      * @param string $comment The comment to strip.
      * @return string The comment passed in but without the stars and slashes
      * that denote the fact that it's a comment.
      */
     public static function stripCommentStars($comment) {
-        return preg_replace('/^[ \t]*\/?\*{1,2}[ \t]?\/?/m', '', $comment);
+        return trim(preg_replace('/^[ \t]*\/?\*{1,2}[ \t]?\/?/m', '', $comment));
     }
 
     /**
@@ -49,13 +52,17 @@ class Docgen_ParserUtils {
 
     /**
      * Takes a docblock comment and returns a version of it that has been stripped of
-     * tags (@param, @return etc.).
+     * tags (@param, @return etc.). The docblock comment must first be stripped of
+     * stars for this to work. Check out the stripCommentStars method.
+     *
+     * Also runs the result through trim() so that there is no leading or trailing
+     * whitespace.
      *
      * @param string $comment A docblock comment.
      * @return string A docblock comment stripped of @tags.
      */
     public static function removeDocTags($comment) {
-        return preg_replace(self::$tag_match_regex, '', $comment);
+        return trim(preg_replace(self::$tag_match_regex, '', $comment));
     }
 
     /**

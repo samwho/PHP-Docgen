@@ -16,7 +16,7 @@ class Docgen_MethodParser extends ReflectionMethod {
      * the call_user_func method.
      */
     public static function addHook($callback) {
-        Docgen_Hooks:add(self::$hook_name, $callback);
+        Docgen_Hooks::add(self::$hook_name, $callback);
     }
 
     /**
