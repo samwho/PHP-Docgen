@@ -4,6 +4,24 @@ class Docgen_Hooks {
     private static $hooks = array();
 
     /**
+     * Returns the master array of all hooks. This is intended for testing
+     * use only. Please do not modify this in any of yuor plugins.
+     *
+     * @return array All hooks registered.
+     */
+    public static function getAllHooks() {
+        return self::$hooks;
+    }
+
+    /**
+     * Sets the master array of all hooks to whatever parameter you pass in.
+     * This is intended for testing purposes only.
+     */
+    public static function restoreHooks($hooks) {
+        self::$hooks = $hooks;
+    }
+
+    /**
      * Add a hook to the system to be called at a later time with arguments.
      *
      * You can add multiple callbacks to the same name. This allows for the

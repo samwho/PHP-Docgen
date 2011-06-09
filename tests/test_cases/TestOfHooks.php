@@ -13,8 +13,27 @@ class TestOfHooks extends UnitTestCase {
      */
     private $hook_calls = 0;
 
-    public function tearDown() {
+    /**
+     * @var array A backup of whatever is in the Hooks array before starting
+     * these tests.
+     */
+    private $hooks_backup;
+
+    /**
+     * Set up and tear down in this class are designed to give you a totally empty
+     * Docgen_Hooks class during these tests. First it saves the current state of the
+     * hooks, and at the end it restores the state.
+     *
+     * This is so that later tests that rely on core plugins will not break due to
+     * the Hooks being reset.
+     */
+    public function setUp() {
+        $this->hooks_backup = Docgen_Hooks::getAllHooks();
         Docgen_Hooks::reset();
+    }
+
+    public function tearDown() {
+        Docgen_Hooks::restoreHooks($this->hooks_backup);
         $this->callback_result = null;
         $this->hook_calls = 0;
     }

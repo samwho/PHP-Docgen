@@ -84,6 +84,18 @@ class Docgen_Parser {
     }
 
     /**
+     * Returns the internall stored list of classes that this class
+     * maintains. All of the classes returned in this list will have
+     * been loaded into the program and accessible already.
+     *
+     * @return array A list of classes in the documented class list
+     * format: file_name => array of classes in that file.
+     */
+    public function getClassList() {
+        return $this->class_list;
+    }
+
+    /**
      * Adds classes to the parser. These classes will be loaded as soon
      * as they are added. Beware of potential naming conflicts.
      *
