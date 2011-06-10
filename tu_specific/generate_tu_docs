@@ -26,9 +26,11 @@ class GenerateThinkUpDocs extends Abstract_Docgen_Application {
         $controllers = new Docgen_Parser($controllers_class_list);
 
         $models_to = $tudir . '../docs/source/reference/models/:class_name.rst';
+        $models_source_to = $tudir . '../docs/source/reference/models/source/:class_name.rst';
         $controllers_to = $tudir . '../docs/source/reference/controllers/:class_name.rst';
         $models_toc_tree = $tudir . '../docs/source/reference/models/index.rst';
         $controllers_toc_tree = $tudir . '../docs/source/reference/controllers/index.rst';
+        $controllers_source_to = $tudir . '../docs/source/reference/controllers/source/:class_name.rst';
 
         $controllers_toc_data = array(
             'title' => 'Controllers',
@@ -44,10 +46,13 @@ class GenerateThinkUpDocs extends Abstract_Docgen_Application {
         );
 
         $template = $this->docgen_template_dir . '/class_rst.tpl';
+        $source_template = $this->docgen_template_dir . '/class_source_rst.tpl';
 
         $models->parseAllToFile($template, $models_to);
+        $models->parseAllToFile($source_template, $models_source_to);
         $models->generateTocTree($models_toc_tree, $models_toc_data);
         $controllers->parseAllToFile($template, $controllers_to);
+        $controllers->parseAllToFile($source_template, $controllers_source_to);
         $controllers->generateTocTree($controllers_toc_tree, $controllers_toc_data);
 
         // If the -b or --build options are supplied, run "make html" in the doc source

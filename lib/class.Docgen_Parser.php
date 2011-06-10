@@ -130,16 +130,16 @@ class Docgen_Parser {
      * The $template and $to parameters get passed to parseClass appropriately.
      */
     public function parseAllToFile($template, $to) {
-        foreach($this->class_list as $file => $class_name_array) {
-            foreach($class_name_array as $class_name) {
-                $this->parseClass($class_name, $template, $to);
-            }
+        $class_info = $this->getAllClassInfo();
+
+        foreach($class_info as $class) {
+            $this->parseClass($class, $template, $to);
         }
     }
 
     /**
-     * The parseClass method takes a class name, the path to a valid template file
-     * and the path to save the parsed class to.
+     * The parseClass method takes a class template info array (or a class name),
+     * the path to a valid template file and the path to save the parsed class to.
      *
      * The class name needs to be a valid, declared class. Before this method is
      * called, the class list that was sent to the Parser is looped through and
@@ -160,12 +160,20 @@ class Docgen_Parser {
      *
      * If this method is called for the Parser class.
      */
-    public function parseClass($class_name, $template, $to) {
-        // Begin parsing. Status messages ftw.
-        echo "Parsing $class_name... ";
+    public function parseClass($class, $template, $to) {
+        // If the parameter is an array, let it through.
+        if (is_array($class)) {
+            $template_info = $class;
+        } else if (is_string($class)) {
+            // If it is a string, pass it through getClassInfo
+            $template_info = $this->getClassInfo($class);
+        } else {
+            // Otherwise fail.
+            throw Exception("Could not parse class. Incorrect parameter.");
+        }
 
-        // Get the array of information to send to the template.
-        $template_info = $this->getClassInfo($class_name);
+        // Begin parsing. Status messages ftw.
+        // echo "Parsing " . $template_info['name'] . "... ";
 
         // Apply file name filters.
         $to = Docgen_Hooks::call('file_name', array($to, $template_info));
@@ -186,7 +194,7 @@ class Docgen_Parser {
         file_put_contents($to, $data);
 
         // Echo success message.
-        echo "Finished. Saved to $to\n\n";
+        // echo "Finished. Saved to $to\n\n";
     }
 
     /**
@@ -222,10 +230,10 @@ class Docgen_Parser {
         $return = array();
         foreach($this->class_list as $file_location => $class_name_array) {
             foreach($class_name_array as $class_name) {
-                $return[] = $this->getClassInfo($class_name);
+                $return[$class_name] = $this->getClassInfo($class_name);
             }
         }
-        return $return;
+        return Docgen_Hooks::call('all_class_info', array($return));
     }
 
     /**
