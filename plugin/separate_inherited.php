@@ -21,6 +21,7 @@ class SeparateInherited {
             if ($method['class_name'] == $class_info['name']) {
                 $new_method_array[] = $method;
             } else {
+                $method['is_inherited'] = true;
                 $inherited_method_array[] = $method;
             }
         }
@@ -46,6 +47,7 @@ class SeparateInherited {
             if ($property['declaring_class'] == $class_info['name']) {
                 $new_property_array[] = $property;
             } else {
+                $property['is_inherited'] = true;
                 $inherited_property_array[] = $property;
             }
         }
