@@ -1,11 +1,13 @@
 <?php
-class Docgen_FileNameParser {
+class Docgen_FileNameParser extends Docgen_Plugin {
+    protected $name = 'File Name Parser';
+
     /**
-     * Add a file name filter to the Parser class. This callback runs the
+     * Add a file name filter. This callback runs the
      * parse method on the current object.
      */
-    public function __construct() {
-        Docgen_Parser::addFileNameHook(array($this, 'parse'));
+    public function onLoad() {
+        $this->addFileNameHook(array($this, 'parseFileName'));
     }
 
     /**
@@ -24,7 +26,7 @@ class Docgen_FileNameParser {
      * This is the class information _after_ it has been passed through the class filters.
      * @return string You _must_ return the filepath from this method.
      */
-    public function parse($file_name, $class_info) {
+    public function parseFileName($file_name, $class_info) {
         // Create an array of key => replacement pairs.
         $replacements = array(
             ':class_name' => $class_info["name"]
@@ -43,4 +45,4 @@ class Docgen_FileNameParser {
 
 // Create an instance of the class. This is the plugin writer's responsibility,
 // the code will not instantiate plugin classes for you.
-new Docgen_FileNameParser();
+Docgen_Plugins::register(new Docgen_FileNameParser());

@@ -7,7 +7,16 @@ class Docgen_Plugins {
      * Returns the directory that docgen looks for plugins in.
      */
     public static function directory() {
-        return dirname(__FILE__) . '/../plugin/';
+        return dirname(__FILE__) . '/../plugins/';
+    }
+
+    public static function register(Docgen_Plugin $plugin) {
+        if ($plugin->checkRequirements()) {
+            self::$loaded_plugins[] = $plugin;
+        } else {
+            trigger_error('The plugin "' . $plugin->getName() . '" did not ' .
+                          'meet its requirement check. Please contact the author.');
+        }
     }
 
     /**
@@ -21,8 +30,15 @@ class Docgen_Plugins {
      * plugin/ directory.
      */
     public static function loadAll() {
-        foreach(glob(self::directory() . '*.php') as $file) {
-            self::load(basename($file));
+        foreach(glob(self::directory() . '*/*.php') as $file) {
+            self::load($file);
+        }
+
+        /*
+         * Calls all of the onLoad() methods in the loaded plugins.
+         */
+        foreach (self::$loaded_plugins as $plugin) {
+            $plugin->onLoad();
         }
 
         // Fire a hook that signifies all plugins have been loaded.
@@ -41,12 +57,9 @@ class Docgen_Plugins {
      *
      * @param string $name Plugin file name without path.
      */
-    public static function load($name) {
-        $file = self::directory() . $name;
-
+    public static function load($file) {
         if (!in_array($file, get_included_files())) {
             require realpath($file);
-            self::$loaded_plugins[] = realpath($file);
         }
     }
 

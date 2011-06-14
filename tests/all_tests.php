@@ -8,6 +8,10 @@ foreach(glob(dirname(__FILE__) . '/test_cases/TestOf*.php') as $test_case_file) 
     require_once $test_case_file;
 }
 
+// Load plugins into the tests. Not 100% sure loading all of them is a good
+// idea yet but we'll see how it goes :)
+Docgen_Plugins::loadAll();
+
 // Create test suite
 $all_tests = new TestSuite('All tests');
 

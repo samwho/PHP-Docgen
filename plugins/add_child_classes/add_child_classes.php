@@ -4,9 +4,11 @@
  * classes, linking the children to their parent classes so that their parent
  * classes contain an array of all of their children.
  */
-class AddChildClasses {
-    public function __construct() {
-        Docgen_Hooks::add('all_class_info', array($this, 'addChildClasses'));
+class AddChildClassesPlugin extends Docgen_Plugin {
+    protected $name = 'Add Child Classes';
+
+    public function onLoad() {
+        $this->addAllClassInfoHook(array($this, 'addChildClasses'));
     }
 
     public function addChildClasses($all_class_info) {
@@ -42,4 +44,4 @@ class AddChildClasses {
     }
 }
 
-new AddChildClasses();
+Docgen_Plugins::register(new AddChildClassesPlugin());

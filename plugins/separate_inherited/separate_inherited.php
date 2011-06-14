@@ -1,9 +1,9 @@
 <?php
 
-class SeparateInherited {
+class SeparateInherited extends Docgen_Plugin {
     public function __construct() {
-        Docgen_ClassParser::addHook(array($this, 'separateInheritedMethods'));
-        Docgen_ClassParser::addHook(array($this, 'separateInheritedProperties'));
+        $this->addClassInfoHook(array($this, 'separateInheritedMethods'));
+        $this->addClassInfoHook(array($this, 'separateInheritedProperties'));
     }
 
     /**
@@ -61,4 +61,4 @@ class SeparateInherited {
 
 // Create an instance of RemoveInheritedMethods so that the hooks
 // get properly registered.
-new SeparateInherited();
+Docgen_Plugins::register(new SeparateInherited());

@@ -5,17 +5,19 @@
  * license string in your class level docblock and don't want it to appear in
  * the documentation.
  */
-class ThinkUp_LicenseRemoval {
+class ThinkUp_LicenseRemoval extends Docgen_Plugin {
+    protected $name = 'Remove GPL';
+
     /**
-     * The constructor will add all of the callbacks to the necessary places.
+     * The onLoad method will add all of the callbacks to the necessary places.
      */
-    public function __construct() {
+    public function onLoad() {
         // Add a class hook. The callback will be passed one argument and that
         // will be the entire array of information on that class.
         //
         // I advise having a play around with the data you will have access to
         // before starting :)
-        Docgen_ClassParser::addHook(array($this, 'removeGplText'));
+       $this->addClassInfoHook(array($this, 'removeGplText'));
     }
 
     /**
@@ -37,6 +39,10 @@ class ThinkUp_LicenseRemoval {
     }
 }
 
-// Create an instance of the class. This is the plugin writer's responsibility,
-// the code will not instantiate plugin classes for you.
-new ThinkUp_LicenseRemoval();
+/*
+ * Create an instance of the plugin and register it with Docgen.
+ *
+ * This is the plugin writer's responsibility and will not be handled
+ * internally inside Docgen.
+ */
+Docgen_Plugins::register(new ThinkUp_LicenseRemoval());

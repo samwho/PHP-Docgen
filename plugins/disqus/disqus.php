@@ -1,11 +1,13 @@
 <?php
 
-class DisqusIntegration {
+class DisqusIntegration extends Docgen_Plugin {
+    protected $name = 'Disqus Integration';
+
     private $config = array();
 
-    public function __construct() {
-        Docgen_ClassParser::addHook(array($this, 'addDisqusConfig'));
-        Docgen_Parser::addCompilerHook(array($this, 'compilerCreatedCallback'));
+    public function onLoad() {
+        $this->addCompilerPreProcessor(array($this, 'disqusPreProcessor'));
+        $this->addClassInfoHook(array($this, 'addDisqusConfig'));
 
         // Edit the shortname to whatever shortname you registered on disqus
         $this->config['shortname'] = 'thinkupdocs';
@@ -35,14 +37,6 @@ class DisqusIntegration {
     }
 
     /**
-     * Adds the pre processor to the compiler.
-     */
-    public function compilerCreatedCallback($compiler) {
-        $compiler->addPreProcessor(array($this, 'disqusPreProcessor'));
-        return $compiler;
-    }
-
-    /**
      * The disqus pre processor simply replaces instances of {disqus} with
      * the correct Dwoo template code to generate disqus comment integration.
      *
@@ -60,4 +54,4 @@ class DisqusIntegration {
     }
 }
 
-new DisqusIntegration();
+Docgen_Plugins::register(new DisqusIntegration());
