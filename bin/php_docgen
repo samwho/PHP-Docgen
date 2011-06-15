@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 // Require the lazy loader. This will auto load classes for you.
-require_once dirname(__FILE__) . '/lib/class.Docgen_LazyLoader.php';
+require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
 
 class Docgen_Application extends Abstract_Docgen_Application {
     public function go() {
@@ -14,10 +14,15 @@ class Docgen_Application extends Abstract_Docgen_Application {
             exit;
         }
 
+        if(isset($this->args['include'])) {
+            include_once $this->args['include'];
+        }
+
         // Extract command line args into separate variables.
         $glob = $this->args['glob'];
         $template = $this->args['template'];
         $output_file = $this->args['file'];
+
 
         // Fail if the template specified does not exist.
         if (!file_exists($template)) {
@@ -45,7 +50,7 @@ class Docgen_Application extends Abstract_Docgen_Application {
 }
 
 // Create the application.
-$app = new Docgen_Application($args);
+$app = new Docgen_Application();
 
 // Run it.
 $app->go();

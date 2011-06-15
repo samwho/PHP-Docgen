@@ -107,8 +107,24 @@ class Docgen_Hooks {
             // references around.
             $keys = array_keys($args);
             $first_key = $keys[0];
+
+            // Record the type that is expected to return after these callbacks
+            $expected_type = gettype($args[$first_key]);
+            if ($expected_type == 'object') {
+                $object = ' (' . get_class($args[$first_key]) . ')';
+            }
+
             foreach($callbacks as $callback) {
                 $args[$first_key] = call_user_func_array($callback, $args);
+            }
+
+            // Get the actual type that was returned from the callbacks
+            $actual_type = gettype($args[$first_key]);
+
+            // If the type has changed, trigger an error
+            if ($actual_type != $expected_type) {
+                trigger_error('Type mismatch on ' .$name. ' hook call. Expected ' .
+                    $expected_type . $object . ' but got ' . $actual_type . '.');
             }
             return $args[$first_key];
         }
