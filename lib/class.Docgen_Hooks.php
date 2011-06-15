@@ -42,6 +42,31 @@ class Docgen_Hooks {
     }
 
     /**
+     * Removes hooks from the system array of hooks. The array passed in must
+     * be of the same format as the internal system array, which is an array of
+     * array like so:
+     *
+     * array(
+     *     'hook_name' => array(
+     *         [0] => $some_callback,
+     *         [1] => $some_other_callback
+     *     ),
+     *     'another_hook_name' => array(
+     *         [0] => $another_callback
+     *     )
+     * );
+     */
+    public static function remove(array $hooks_to_remove) {
+        foreach($hooks_to_remove as $hook_name => $callbacks) {
+            foreach(self::$hooks[$hook_name] as $key => $callback) {
+                if (in_array($callback, $callbacks)) {
+                    unset(self::$hooks[$hook_name][$key]);
+                }
+            }
+        }
+    }
+
+    /**
      * This function calls a callback and has two behaviours depending on
      * whether or not you pass in a second parameter.
      *

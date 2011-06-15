@@ -1,7 +1,7 @@
 <?php
 
 class SeparateInherited extends Docgen_Plugin {
-    public function __construct() {
+    public function onLoad() {
         $this->addClassInfoHook(array($this, 'separateInheritedMethods'));
         $this->addClassInfoHook(array($this, 'separateInheritedProperties'));
     }

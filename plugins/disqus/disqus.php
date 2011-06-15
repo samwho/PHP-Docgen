@@ -6,7 +6,7 @@ class DisqusIntegration extends Docgen_Plugin {
     private $config = array();
 
     public function onLoad() {
-        $this->addCompilerPreProcessor(array($this, 'disqusPreProcessor'));
+        $this->addCompilerHook(array($this, 'addDisqusPreProcessor'));
         $this->addClassInfoHook(array($this, 'addDisqusConfig'));
 
         // Edit the shortname to whatever shortname you registered on disqus
@@ -34,6 +34,10 @@ class DisqusIntegration extends Docgen_Plugin {
         $class['disqus']['id'] = $class['name'];
 
         return $class;
+    }
+
+    public function addDisqusPreProcessor(Dwoo_Compiler $compiler) {
+        $compiler->addPreProcessor(array($this, 'disqusPreProcessor'));
     }
 
     /**

@@ -44,14 +44,13 @@ abstract class Docgen_Plugin {
      * @param callback $callback The callback to add.
      */
     protected function addHook($name, $callback) {
-        Docgen_Hooks::add($name, $callback);
-
         // Add the registered hook to the array of registered hooks
         // maintained by this class. For introspection purposes later.
         if (!isset($this->registered_hooks[$name])) {
             $this->registered_hooks[$name] = array();
         }
         $this->registered_hooks[$name][] = $callback;
+        Docgen_Hooks::add($name, $callback);
     }
 
     /**
@@ -64,6 +63,19 @@ abstract class Docgen_Plugin {
      */
     public function getRegisteredHooks() {
         return $this->registered_hooks;
+    }
+
+    /**
+     * Removes all registered hooks this plugin has in the system and
+     * unregisters it. Effectively, it is totally unknown to the system
+     * after a call to this method.
+     *
+     * If you want to load it again, just reregister it.
+     */
+    public function unload() {
+        Docgen_Hooks::remove($this->getRegisteredHooks());
+        $this->registered_hooks = array();
+        Docgen_Plugins::unregister($this);
     }
 
     /**
@@ -132,37 +144,6 @@ abstract class Docgen_Plugin {
      */
     protected function addCompilerHook($callback) {
         $this->addHook('compiler_created', $callback);
-    }
-
-    /**
-     * This method allows you to add a pre processor to the Dwoo_Compiler
-     * that the script uses. The pre processor will have access to the
-     * Dwoo_Compiler object and the template contents and will be
-     * expected to return a string which will represent the new template
-     * contents.
-     *
-     * An example method stub:
-     *
-     * public function myPreProcessor(Dwoo_Compiler $compiler, $template) {
-     *     // Some code that modifies $template
-     *
-     *     return $template;
-     * }
-     */
-    protected function addCompilerPreProcessor($callback) {
-        $this->addHook('compiler_created', function($compiler) use ($callback) {
-            $compiler->addPreProcessor($callback);
-        });
-    }
-
-    /**
-     * Works in exactly the same way as addCompilerPreProcessor(). See
-     * documentation for that method for details.
-     */
-    protected function addCompilerPostProcessor($callback) {
-        $this->addHook('compiler_created', function($compiler) use ($callback) {
-            $compiler->addPostProcessor($callback);
-        });
     }
 
     /**

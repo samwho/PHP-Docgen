@@ -10,12 +10,40 @@ class Docgen_Plugins {
         return dirname(__FILE__) . '/../plugins/';
     }
 
+    /**
+     * Registers a plugin with the system. First, it checks that it passes
+     * its requirements, then it adds it to the array of loaded plugins.
+     *
+     * If it does not meet its requirements, an error is triggered (not a
+     * fatal, so the program will continue) and the method returns false.
+     *
+     * If the plugin is already registered, method returns false.
+     */
     public static function register(Docgen_Plugin $plugin) {
         if ($plugin->checkRequirements()) {
-            self::$loaded_plugins[] = $plugin;
+            return self::load($plugin);
         } else {
             trigger_error('The plugin "' . $plugin->getName() . '" did not ' .
-                          'meet its requirement check. Please contact the author.');
+                'meet its requirement check. Please contact the author.');
+            return false;
+        }
+    }
+
+    /**
+     * Unregisters a plugin. This only removes it from the array of plugins,
+     * it does not unregister its hooks. To fully unregister a plugin, call its
+     * unload() method.
+     *
+     * @return bool True on success, false if the plugin didn't exist in the
+     * system.
+     */
+    public static function unregister(Docgen_Plugin $plugin) {
+        $key = array_search($plugin, self::$loaded_plugins);
+        if ($key !== false) {
+            unset(self::$loaded_plugins[$key]);
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -31,35 +59,20 @@ class Docgen_Plugins {
      */
     public static function loadAll() {
         foreach(glob(self::directory() . '*/*.php') as $file) {
-            self::load($file);
-        }
-
-        /*
-         * Calls all of the onLoad() methods in the loaded plugins.
-         */
-        foreach (self::$loaded_plugins as $plugin) {
-            $plugin->onLoad();
+            require_once $file;
         }
 
         // Fire a hook that signifies all plugins have been loaded.
-        Docgen_Hooks::call('plugins_loaded');
+        Docgen_Hooks::call('plugins_loaded', array(self::$loaded_plugins));
     }
 
-    /**
-     * Loads a plugin by its file name. This function just requires a file by
-     * prepending the plugin directory to the argument passed in.
-     *
-     * Example:
-     *
-     * $plugin_dir . $file
-     *
-     * The file name does not need a leading forward slash.
-     *
-     * @param string $name Plugin file name without path.
-     */
-    public static function load($file) {
-        if (!in_array($file, get_included_files())) {
-            require realpath($file);
+    public function load(Docgen_Plugin $plugin) {
+        if (!in_array($plugin, self::$loaded_plugins)) {
+            self::$loaded_plugins[] = $plugin;
+            $plugin->onLoad();
+            return true;
+        } else {
+            return false;
         }
     }
 
