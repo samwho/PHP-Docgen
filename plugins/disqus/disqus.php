@@ -14,7 +14,7 @@ class DisqusIntegration extends Docgen_Plugin {
 
         // This should point to the disqus.tpl file, correct by default but it
         // you want to move the disqus.tpl, you will need to edit this.
-        $this->config['template'] = realpath(dirname(__FILE__) . '/../../templates/disqus.tpl');
+        $this->config['template'] = realpath(dirname(__FILE__) . '/disqus.tpl');
     }
 
     /**
