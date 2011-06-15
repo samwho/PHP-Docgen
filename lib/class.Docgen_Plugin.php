@@ -85,15 +85,15 @@ abstract class Docgen_Plugin {
      * For example, if you require cURL for your plugin to function, you
      * might override this method to look like this:
      *
-     * public function checkRequirements() {
-     *    if (in_array('curl', get_loaded_extensions())) {
-     *        // cURL is loaded, return true
-     *        return true;
-     *    } else {
-     *        // cURL is NOT loaded, return false
-     *        return false;
-     *    }
-     * }
+     *     public function checkRequirements() {
+     *        if (in_array('curl', get_loaded_extensions())) {
+     *            // cURL is loaded, return true
+     *            return true;
+     *        } else {
+     *            // cURL is NOT loaded, return false
+     *            return false;
+     *        }
+     *     }
      *
      * If you return false from this method, your onLoad() method
      * will not be called. The constructor will be called, though. If
@@ -112,11 +112,13 @@ abstract class Docgen_Plugin {
      *
      * It is advised to use this instead of a constructor because
      * the constructor is called when the plugin is first introduced
-     * into the sytem, thus not all of the other plugins will have
-     * been loaded at that time.
+     * into the system. It isn't called again after that. So if your
+     * plugin is unloaded at any point, when it gets reloaded the onLoad()
+     * method will be called but not the constructor.
      *
      * If you do feel the need to use a constructor, make sure you call
-     * the super constructor first.
+     * the super constructor first and don't put any hook registration
+     * in there.
      */
     public function onLoad() {}
 
@@ -136,11 +138,11 @@ abstract class Docgen_Plugin {
      *
      * Example method stub (what your callback should look like):
      *
-     * public function myMethod(Dwoo_Compiler $compiler) {
-     *     // Some code
+     *     public function myMethod(Dwoo_Compiler $compiler) {
+     *         // Some code
      *
-     *     return $compiler;
-     * }
+     *         return $compiler;
+     *     }
      */
     protected function addCompilerHook($callback) {
         $this->addHook('compiler_created', $callback);
@@ -156,11 +158,11 @@ abstract class Docgen_Plugin {
      *
      * Example method stub:
      *
-     * public function myClassInfoModifier(array $class_info) {
-     *     // Code that modifies the class info in a clever way
+     *     public function myClassInfoModifier(array $class_info) {
+     *         // Code that modifies the class info in a clever way
      *
-     *     return $class_info;
-     * }
+     *         return $class_info;
+     *     }
      */
     protected function addClassInfoHook($callback) {
         $this->addHook('class_info', $callback);
@@ -176,11 +178,11 @@ abstract class Docgen_Plugin {
      *
      * Example method stub:
      *
-     * public function myMethodInfoModifier(array $method_info) {
-     *     // Code that modifies the method info in a clever way
+     *     public function myMethodInfoModifier(array $method_info) {
+     *         // Code that modifies the method info in a clever way
      *
-     *     return $method_info;
-     * }
+     *         return $method_info;
+     *     }
      */
     protected function addMethodInfoHook($callback) {
         $this->addHook('method_info', $callback);
@@ -196,14 +198,33 @@ abstract class Docgen_Plugin {
      *
      * Example method stub:
      *
-     * public function myPropertyInfoModifier(array $property_info) {
-     *     // Code that modifies the property info in a clever way
+     *     public function myPropertyInfoModifier(array $property_info) {
+     *         // Code that modifies the property info in a clever way
      *
-     *     return $property_info;
-     * }
+     *         return $property_info;
+     *     }
      */
     protected function addPropertyInfoHook($callback) {
         $this->addHook('property_info', $callback);
+    }
+
+    /* This method allows you to add a hook that modifies the parameter
+     * information before it gets sent to the parser. Your callback
+     * will receive a single argument that is an associative array
+     * of parameter information and will be expected to return an associative
+     * array of parameter information. See the Wiki for information on what
+     * this array will contain.
+     *
+     * Example method stub:
+     *
+     *     public function myParameterInfoModifier(array $parameter_info) {
+     *         // Code that modifies the parameter info in a clever way
+     *
+     *         return $parameter_info;
+     *     }
+     */
+    protected function addParameterInfoHook($callback) {
+        $this->addHook('parameter_info', $callback);
     }
 
     /**
@@ -232,11 +253,11 @@ abstract class Docgen_Plugin {
      *
      * Example method stub:
      *
-     * public function myFileNameModifier($filename, $template_info) {
-     *     // code to modify the $filename in a clever way
+     *     public function myFileNameModifier($filename, $template_info) {
+     *         // code to modify the $filename in a clever way
      *
-     *     return $filename;
-     * }
+     *         return $filename;
+     *     }
      */
     protected function addFileNameHook($callback) {
         $this->addHook('file_name', $callback);
@@ -253,13 +274,32 @@ abstract class Docgen_Plugin {
      *
      * Example method stub:
      *
-     * public function myAllClassInfoModifier(array $all_class_info) {
-     *     // Some sweet code that does cool stuff to $all_class_info
+     *     public function myAllClassInfoModifier(array $all_class_info) {
+     *         // Some sweet code that does cool stuff to $all_class_info
      *
-     *     return $all_class_info;
-     * }
+     *         return $all_class_info;
+     *     }
      */
     protected function addAllClassInfoHook($callback) {
         $this->addHook('all_class_info', $callback);
+    }
+
+    /**
+     * This method allows you to access the array of loaded plugins after
+     * they have all been loaded.
+     *
+     * Your callback will receive an array of loaded plugins and will be
+     * expected to return an array of plugins.
+     *
+     * Example method stub:
+     *
+     *     public function myPluginsLoadedMethod(array $plugins) {
+     *         // Code that does something clever here
+     *
+     *         return $plugins;
+     *     }
+     */
+    protected function addPluginsLoadedHook($callback) {
+        $this->addHook('plugins_loaded', $callback);
     }
 }

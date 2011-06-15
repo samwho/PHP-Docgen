@@ -1,18 +1,10 @@
-PHP Docgen
-==========
+## PHP Docgen
 
-Work in progress.
+Docgen is a framework for allowing you to gather information about your PHP source code and create maintainable,
+automatically generated documentation from it.
 
-TODO
-====
+One of Docgen's main aims is to be hackable. Not only is it open source but it has a powerful and easy to leverage
+plugin framework that you can use to do a huge range of interesting things. For some examples, see the existing plugins
+:)
 
-Need to write tests.
-
-Need to look closer at the Docgen_Application and make it into an abstract class for users to implement.
-
-The Docgen_CodeSearch class could probably use some extra helpful methods, too. For finding functions, maybe.
-
-Need to write tutorials and stuff so people actually know what to do.
-
-Lots of love,
-Sam
+To get started, please visi the GitHub Wiki: http://github.com/samwho/PHP-Docgen/wiki
