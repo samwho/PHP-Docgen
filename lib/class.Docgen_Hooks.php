@@ -111,7 +111,7 @@ class Docgen_Hooks {
             // Record the type that is expected to return after these callbacks
             $expected_type = gettype($args[$first_key]);
             if ($expected_type == 'object') {
-                $object = ' (' . get_class($args[$first_key]) . ')';
+                $expected_type .= ' (' . get_class($args[$first_key]) . ')';
             }
 
             foreach($callbacks as $callback) {
@@ -120,11 +120,21 @@ class Docgen_Hooks {
 
             // Get the actual type that was returned from the callbacks
             $actual_type = gettype($args[$first_key]);
+            if ($actual_type == 'object') {
+                $actual_type .= ' (' .get_class($args[$first_key]) . ')';
+            }
 
             // If the type has changed, trigger an error
             if ($actual_type != $expected_type) {
+                // Get the debug backtrace
+                $backtrace = debug_backtrace();
+                // Go up two function calls
+                $backtrace = $backtrace[1];
+
                 trigger_error('Type mismatch on ' .$name. ' hook call. Expected ' .
-                    $expected_type . $object . ' but got ' . $actual_type . '.');
+                    $expected_type . ' but got ' . $actual_type .
+                    '. Hook called from: ' . $backtrace['class'] . '::' .
+                    $backtrace['function'] . '.');
             }
             return $args[$first_key];
         }

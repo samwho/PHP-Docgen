@@ -31,27 +31,27 @@ There is no documentation for this class.
 Properties
 ----------
 
-{foreach $properties property}{include 'templates/property_rst.tpl'}{/foreach}
+{foreach $properties property}{include 'templates/rst/property_rst.tpl'}{/foreach}
 {/if}
 
 {if $inherited_properties}
 Inherited Properties
 --------------------
 
-{foreach $inherited_properties property}{include 'templates/property_rst.tpl'}{/foreach}
+{foreach $inherited_properties property}{include 'templates/rst/property_rst.tpl'}{/foreach}
 {/if}
 
 {if $methods}
 Methods
 -------
 
-{foreach $methods method}{include 'templates/method_rst.tpl'}{/foreach}
+{foreach $methods method}{include 'templates/rst/method_rst.tpl'}{/foreach}
 {/if}
 {if $inherited_methods}
 Inherited Methods
 -----------------
 
-{foreach $inherited_methods method}{include 'templates/method_rst.tpl'}{/foreach}
+{foreach $inherited_methods method}{include 'templates/rst/method_rst.tpl'}{/foreach}
 {/if}
-{* The {disqus} tag is provided by the plugin/disqus.php plugin. If you disable that plugin, you will need to remove this tag. *}
+{* The {disqus} tag is provided by the disqus plugin. If you disable that plugin, you will need to remove this tag. *}
 {disqus}

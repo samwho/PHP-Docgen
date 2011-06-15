@@ -43,7 +43,7 @@ class TestOfParser extends UnitTestCase {
         $this->search->findClasses($this->base_dir . '/lib/*.php');
         $this->parser->addClasses($this->search->getClassList());
 
-        $this->parser->parseAllToFile($this->base_dir . '/templates/class_rst.tpl',
+        $this->parser->parseAllToFile($this->base_dir . '/templates/rst/class_rst.tpl',
             $this->base_dir . '/tests/build/:class_name.rst');
 
         $files_parsed = glob($this->base_dir . '/tests/build/*');

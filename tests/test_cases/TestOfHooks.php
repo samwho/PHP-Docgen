@@ -70,7 +70,7 @@ class TestOfHooks extends UnitTestCase {
     }
 
     public function testMultipleHookCalls() {
-        Docgen_Hooks::add('test_hook', array($this, 'callback'));
+        Docgen_Hooks::add('test_hook', array($this, 'callbackWithArg'));
         Docgen_Hooks::add('test_hook', array($this, 'callbackWithArg'));
 
         Docgen_Hooks::call('test_hook', array('arg'));
