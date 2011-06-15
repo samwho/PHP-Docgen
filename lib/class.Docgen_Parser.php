@@ -169,14 +169,29 @@ class Docgen_Parser {
             $template_info = $this->getClassInfo($class);
         } else {
             // Otherwise fail.
-            throw Exception("Could not parse class. Incorrect parameter.");
+            throw Exception("Could not parse class. Incorrect \$class parameter.");
         }
+
+
+        $template_info = array(
+            'class' => $template_info,
+            'docgen' => array(
+                'templates' => array(
+                    'rst' => array(
+                        'class' => Docgen::templateRstDir() . 'class_rst.tpl',
+                        'class_source' => Docgen::templateRstDir() . 'class_source_rst.tpl',
+                        'method' => Docgen::templateRstDir() . 'method_rst.tpl',
+                        'property' => Docgen::templateRstDir() . 'property_rst.tpl',
+                    )
+                )
+            )
+        );
 
         // Begin parsing. Status messages ftw.
         // echo "Parsing " . $template_info['name'] . "... ";
 
         // Apply file name filters.
-        $to = Docgen_Hooks::call('file_name', array($to, $template_info));
+        $to = Docgen_Hooks::call('file_name', array($to, $template_info['class']));
 
         // Make sure that the directory exists.
         if (!file_exists(dirname($to))) {
@@ -299,7 +314,7 @@ class Docgen_Parser {
 
         $classes = $this->templateFriendlyClassList();
         $classes = array_merge($additional_data, $classes);
-        $data = $this->parse(dirname(__FILE__) . '/../templates/rst_toc.tpl', $classes);
+        $data = $this->parse(dirname(__FILE__) . '/../templates/rst/rst_toc.tpl', $classes);
         if (file_put_contents($to, $data)) {
             echo 'Finished.' . "\n";
         } else {

@@ -1,57 +1,57 @@
-{$name}
-{regex_replace $name "/./" "="}
+{$class.name}
+{regex_replace $class.name "/./" "="}
 
-View `full source code <./source/{$name}.html>`_.
+View `full source code <./source/{$class.name}.html>`_.
 
-{if $interfaces}
+{if $class.interfaces}
 Interfaces
 ----------
-{foreach $interfaces interface}* `{$interface} <./{$interface}.html>`_{/foreach}
+{foreach $class.interfaces interface}* `{$interface} <./{$interface}.html>`_{/foreach}
 {/if}
-{if $parent}
-Inherits from `{$parent} <./{$parent}.html>`_.
+{if $class.parent}
+Inherits from `{$class.parent} <./{$class.parent}.html>`_.
 {/if}
 
-{if $children}
+{if $class.children}
 Children
 --------
 
-{foreach $children child}
+{foreach $class.children child}
 * `{$child} <./{$child}.html>`_
 {/foreach}
 {/if}
 
-{if $docblock}
-{$docblock}
+{if $class.docblock}
+{$class.docblock}
 {else}
 There is no documentation for this class.
 {/if}
 
-{if $properties}
+{if $class.properties}
 Properties
 ----------
 
-{foreach $properties property}{include 'templates/rst/property_rst.tpl'}{/foreach}
+{foreach $class.properties property}{include $docgen.template.rst.property}{/foreach}
 {/if}
 
-{if $inherited_properties}
+{if $class.inherited_properties}
 Inherited Properties
 --------------------
 
-{foreach $inherited_properties property}{include 'templates/rst/property_rst.tpl'}{/foreach}
+{foreach $class.inherited_properties property}{include $docgen.template.rst.property}{/foreach}
 {/if}
 
-{if $methods}
+{if $class.methods}
 Methods
 -------
 
-{foreach $methods method}{include 'templates/rst/method_rst.tpl'}{/foreach}
+{foreach $class.methods method}{include $docgen.template.rst.method}{/foreach}
 {/if}
-{if $inherited_methods}
+{if $class.inherited_methods}
 Inherited Methods
 -----------------
 
-{foreach $inherited_methods method}{include 'templates/rst/method_rst.tpl'}{/foreach}
+{foreach $class.inherited_methods method}{include $docgen.template.rst.method}{/foreach}
 {/if}
 {* The {disqus} tag is provided by the disqus plugin. If you disable that plugin, you will need to remove this tag. *}
 {disqus}
