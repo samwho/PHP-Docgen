@@ -7,6 +7,10 @@
 class AddChildClassesPlugin extends Docgen_Plugin {
     protected $name = 'Add Child Classes';
 
+    public function version() {
+        return '0.1';
+    }
+
     public function onLoad() {
         $this->addAllClassInfoHook(array($this, 'addChildClasses'));
     }

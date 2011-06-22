@@ -2,6 +2,10 @@
 class Docgen_FileNameParser extends Docgen_Plugin {
     protected $name = 'File Name Parser';
 
+    public function version() {
+        return '0.1';
+    }
+
     /**
      * Add a file name filter. This callback runs the
      * parse method on the current object.

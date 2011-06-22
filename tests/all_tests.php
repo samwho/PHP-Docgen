@@ -3,6 +3,8 @@
 require_once dirname(__FILE__) . '/../extlib/simpletest/autorun.php';
 // Load the Docgen lazy loader
 require_once dirname(__FILE__) . '/../lib/class.Docgen_LazyLoader.php';
+// Load the Dwoo autoloader
+require_once dirname(__FILE__) . '/../extlib/dwoo/dwooAutoload.php';
 // Load all of the test cases
 foreach(glob(dirname(__FILE__) . '/test_cases/TestOf*.php') as $test_case_file) {
     require_once $test_case_file;

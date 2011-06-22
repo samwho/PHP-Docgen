@@ -60,4 +60,42 @@ class TestOfPlugins extends UnitTestCase {
             Docgen_Plugins::register($plugin);
         }
     }
+
+    public function testPluginsAreValid() {
+        $plugins = Docgen_Plugins::getLoadedPlugins();
+
+        foreach($plugins as $plugin) {
+            $this->assertNotEqual($plugin->getName(), 'Anonymous Plugin',
+                'A plugin still has the name "Anonymous Plugin". Please change this.');
+            $this->assertNotEqual($plugin->getRegisteredHooks(), array(),
+                'Plugin "'.$plugin->getName().'" has no registered hooks. Are you sure it is working correctly?');
+
+
+            /*
+             * Some class introspection checking for the plugins.
+             */
+            $class = new Docgen_ClassParser(get_class($plugin));
+            $info = $class->templateInfo();
+            $constructor = null;
+            $onLoad = null;
+
+            foreach($info['methods'] as $method) {
+                switch ($method['name']) {
+                case '__construct': $constructor = $method; break;
+                case 'onLoad': $onLoad = $method; break;
+                }
+            }
+
+            /*
+             * Need to make sure that if they have overridden the constructor,
+             * the have called the parent constructor inside it.
+             */
+            if (!is_null($constructor)) {
+                if ($constructor['class_name'] != 'Docgen_Plugin') {
+                    $parent_called = preg_match('/parent\:\:\_\_construct\(/', $constructor['source']);
+                    $this->assertTrue($parent_called > 0, 'Parent constructor not called in overridden constructor for "'.$plugin->getName().'".');
+                }
+            }
+        }
+    }
 }

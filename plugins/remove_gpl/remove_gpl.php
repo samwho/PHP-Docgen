@@ -8,6 +8,10 @@
 class ThinkUp_LicenseRemoval extends Docgen_Plugin {
     protected $name = 'Remove GPL';
 
+    public function version() {
+        return '0.1';
+    }
+
     /**
      * The onLoad method will add all of the callbacks to the necessary places.
      */

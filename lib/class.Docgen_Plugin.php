@@ -21,6 +21,13 @@ abstract class Docgen_Plugin {
      */
     protected $name = 'Anonymous Plugin';
 
+    /**
+     * Gets the version of this plugin.
+     *
+     * @return string Plugin version.
+     */
+    public abstract function version();
+
 
     /**
      * The constructor is used for initialisation of instance variables

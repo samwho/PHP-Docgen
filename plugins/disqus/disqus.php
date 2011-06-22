@@ -3,6 +3,10 @@
 class DisqusIntegration extends Docgen_Plugin {
     protected $name = 'Disqus Integration';
 
+    public function version() {
+        return '0.1';
+    }
+
     private $config = array();
 
     public function onLoad() {
