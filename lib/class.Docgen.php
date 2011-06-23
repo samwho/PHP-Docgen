@@ -1,6 +1,8 @@
 <?php
 
 class Docgen {
+    const VERSION = '0.1';
+
     public static function baseDir() {
         return realpath(dirname(__FILE__) . '/..') . '/';
     }

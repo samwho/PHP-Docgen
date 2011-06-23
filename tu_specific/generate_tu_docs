@@ -45,8 +45,8 @@ class GenerateThinkUpDocs extends Abstract_Docgen_Application {
 
         );
 
-        $template = $this->docgen_template_dir . '/rst/class.tpl';
-        $source_template = $this->docgen_template_dir . '/rst/class_source.tpl';
+        $template = Docgen::templateDir() . '/rst/class.tpl';
+        $source_template = Docgen::templateDir() . '/rst/class_source.tpl';
 
         $models->parseAllToFile($template, $models_to);
         $models->parseAllToFile($source_template, $models_source_to);
