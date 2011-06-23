@@ -144,7 +144,7 @@ class Docgen_MethodParser extends ReflectionMethod {
         $info['is_abstract'] = $this->isAbstract();
         $info['is_constructor'] = $this->isConstructor();
         $info['is_destructor'] = $this->isDestructor();
-        $info['is_fianl'] = $this->isFinal();
+        $info['is_final'] = $this->isFinal();
         $info['is_private'] = $this->isPrivate();
         $info['is_protected'] = $this->isProtected();
         $info['is_public'] = $this->isPublic();

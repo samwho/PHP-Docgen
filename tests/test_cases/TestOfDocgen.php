@@ -17,7 +17,6 @@ class TestOfDocgen extends UnitTestCase {
     public function testLibDir() {
         $this->assertTrue(file_exists(Docgen::libDir()));
     }
-
     public function testExtlibDir() {
         $this->assertTrue(file_exists(Docgen::extlibDir()));
     }
