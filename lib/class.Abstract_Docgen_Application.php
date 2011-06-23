@@ -93,7 +93,7 @@ abstract class Abstract_Docgen_Application {
         $this->search = new Docgen_CodeSearch();
         $this->parser = new Docgen_Parser();
 
-        $this->docgen_base_dir = realpath(dirname(__FILE__) . '/../');
+        $this->docgen_base_dir = Docgen::baseDir();
         $this->docgen_template_dir = $this->docgen_base_dir . '/templates';
     }
 

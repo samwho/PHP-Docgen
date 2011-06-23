@@ -5,4 +5,3 @@ Inherited from `{$property.declaring_class} <./{$property.declaring_class}.html>
 {/if}
 
 {$property.docblock}
-

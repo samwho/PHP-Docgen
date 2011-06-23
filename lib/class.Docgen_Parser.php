@@ -159,6 +159,10 @@ class Docgen_Parser {
      * will be changed to: /home/sam/Parser.rst
      *
      * If this method is called for the Parser class.
+     *
+     *
+     * NOTE: This class also wraps the class information array in a "class" array
+     * element so that it makes a little more semantic sense in the templates.
      */
     public function parseClass($class, $template, $to) {
         // If the parameter is an array, let it through.
@@ -175,16 +179,6 @@ class Docgen_Parser {
 
         $template_info = array(
             'class' => $template_info,
-            'docgen' => array(
-                'templates' => array(
-                    'rst' => array(
-                        'class' => Docgen::templateRstDir() . 'class_rst.tpl',
-                        'class_source' => Docgen::templateRstDir() . 'class_source_rst.tpl',
-                        'method' => Docgen::templateRstDir() . 'method_rst.tpl',
-                        'property' => Docgen::templateRstDir() . 'property_rst.tpl',
-                    )
-                )
-            )
         );
 
         // Begin parsing. Status messages ftw.
@@ -314,7 +308,7 @@ class Docgen_Parser {
 
         $classes = $this->templateFriendlyClassList();
         $classes = array_merge($additional_data, $classes);
-        $data = $this->parse(dirname(__FILE__) . '/../templates/rst/rst_toc.tpl', $classes);
+        $data = $this->parse(dirname(__FILE__) . '/../templates/rst/toc.tpl', $classes);
         if (file_put_contents($to, $data)) {
             echo 'Finished.' . "\n";
         } else {
