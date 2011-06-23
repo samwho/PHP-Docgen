@@ -5,13 +5,16 @@ class TestOfPlugins extends UnitTestCase {
         $hooks = Docgen_Hooks::getAllHooks();
         $plugins = Docgen_Plugins::getLoadedPlugins();
 
+        // Unload all plugins.
         foreach($plugins as $plugin) {
             $plugin->unload();
         }
 
+        // These should be empty array of an array of empty arrays.
         $plugins_empty = Docgen_Plugins::getLoadedPlugins();
         $hooks_empty = Docgen_Hooks::getAllHooks();
 
+        // Make sure everything has unloaded.
         $this->assertTrue(empty($plugins_empty));
         foreach($hooks_empty as $should_be_empty) {
             $this->assertTrue(empty($should_be_empty));
@@ -22,6 +25,7 @@ class TestOfPlugins extends UnitTestCase {
             Docgen_Plugins::register($plugin);
         }
 
+        // These should now be populated as before.
         $hooks_after = Docgen_Hooks::getAllHooks();
         $plugins_after = Docgen_Plugins::getLoadedPlugins();
 
@@ -54,6 +58,8 @@ class TestOfPlugins extends UnitTestCase {
 
                 // Assert that the sizes of the callback arrays are correct
                 $this->assertEqual(sizeof($hooks[$hook_name]), sizeof($hooks_after[$hook_name]) + sizeof($callbacks));
+
+                $this->assertTrue(is_string($plugin->version()), 'Plugin version should be a string. Failed on ' . $plugin->getName() . '.');
             }
 
             // Put the plugin back into the system

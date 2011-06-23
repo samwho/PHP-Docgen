@@ -25,6 +25,10 @@ $all_tests->add(new TestOfParserUtils());
 $all_tests->add(new TestOfHooks());
 $all_tests->add(new TestOfLog());
 $all_tests->add(new TestOfParser());
+$all_tests->add(new TestOfDocgen());
+
+// Call the test suite hook
+$all_tests = Docgen_Hooks::call('test_suite', array($all_tests));
 
 // Run tests with a TextReporter
 $reporter = new TextReporter();
