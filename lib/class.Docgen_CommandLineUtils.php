@@ -23,6 +23,8 @@ class Docgen_CommandLineUtils {
      *
      * Found at http://php.net/manual/en/features.commandline.php
      *
+     * @author              Patrick Fisher <patrick@pwfisher.com>
+     * @source              https://github.com/pwfisher/CommandLine.php
      * @param array $argv An array of command line variables.
      * @return array A nicer, more meaningful array of command line vars.
      */
